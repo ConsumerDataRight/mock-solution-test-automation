@@ -1,0 +1,83 @@
+trigger:
+  - develop
+  - main
+
+# the build will run on a Microsoft hosted agent, using the lastest Windows VM Image 
+pool:
+  vmImage: 'windows-latest'
+
+# these variables are available throughout the build file
+# just the build configuration is defined, in this case we are building Release packages
+variables:
+  buildConfiguration: 'Release'
+  ${{ if or(eq(variables['Build.SourceBranchName'], 'develop'), eq(variables['Build.SourceBranchName'], 'main'), startsWith(variables['Build.SourceBranchName'], 'release')) }}: 
+    MINVERBUILDMETADATA: ''
+  ${{ else }}:
+    MINVERBUILDMETADATA: $(Build.SourceVersion)
+
+# The build has 3 seperate tasks run under 1 step
+steps:
+- checkout: self
+  fetchDepth: 0
+
+# The first task is the dotnet command build, pointing to our csproj file
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
+  inputs:
+    command: 'build'
+    arguments: '--configuration $(buildConfiguration)'
+    projects: 'Source/**/*.csproj'
+
+- task: DotNetCoreCLI@2
+  displayName: Unit Tests
+  inputs:
+    command: 'test'
+    projects: '$(System.DefaultWorkingDirectory)/Source/**/*UnitTests.csproj'
+    arguments: '--configuration $(buildConfiguration) --collect "XPlat Code coverage"'
+
+- task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@5
+  displayName: 'Generate Cobertura Code Coverage Report'
+  inputs:
+    ${{ if eq(variables['Agent.OS'], 'Windows_NT') }}:
+      reports: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
+    ${{ if ne(variables['Agent.OS'], 'Windows_NT') }}:
+      reports: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+    targetdir: '$(Build.SourcesDirectory)\Source\TestResults\Coverage\Reports\'
+    historydir: '$(Build.SourcesDirectory)\Source\TestResults\Coverage\History\'
+    assemblyfilters: '+ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation'
+    verbosity: Verbose
+    tag: $(Build.BuildNumber)
+    reportTypes: HtmlInline_AzurePipelines;Cobertura
+
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish Cobertura Code Coverage'
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: '$(Build.SourcesDirectory)/Source/TestResults/Coverage/Reports/Cobertura.xml'
+    reportDirectory: '$(Build.SourcesDirectory)/Source/TestResults/Coverage/Reports'
+
+# The second task is dotnet pack command again pointing to the csproj file
+# The nobuild means the project will not be compiled before running pack, because its already built in above step
+- task: DotNetCoreCLI@2
+  displayName: "dotnet pack"
+  inputs:
+    command: 'pack'
+    arguments: '--configuration $(buildConfiguration)'
+    packagesToPack: 'Source/ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation/ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.csproj'
+    nobuild: true
+    versioningScheme: 'off'
+    
+- task: PublishSymbols@2
+  displayName: Publish symbols path
+  continueOnError: True
+  inputs:
+    SearchPattern: '**\bin\**\*.pdb'
+    PublishSymbols: false
+    SymbolServerType: TeamServices
+    
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+  condition: succeededOrFailed()
+  inputs:
+    PathtoPublish: $(Build.ArtifactStagingDirectory)
+    TargetPath: '\\my\share\$(Build.DefinitionName)\$(Build.BuildNumber)'

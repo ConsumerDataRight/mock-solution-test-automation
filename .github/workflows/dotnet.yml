@@ -1,0 +1,70 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths-ignore:
+    # Any update here needs to be done for
+    # - `pull_request` see below
+      - '*.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/pull_request_template.md'
+      - '.github/stale.yml'
+      - 'LICENSE'
+  pull_request:
+    branches: [ main, develop ]
+    types: [opened, synchronize, reopened]
+    paths-ignore:
+    # Any update here needs to be done for
+    # - `push`see before
+      - '*.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/pull_request_template.md'
+      - '.github/stale.yml'
+      - 'LICENSE'
+    
+env:
+  buildConfiguration: 'Release'
+  buildRuntime: 'win-x64'
+  runEnvironment: 'Release'
+  ASPNETCORE_ENVIRONMENT: 'Release'
+  
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:    
+    - name: Checkout Mock Solution Test Automation
+      uses: actions/checkout@v4
+      with:
+        path: ./mock-solution-test-automation    
+
+    - name: List contents
+      if: always()
+      run: |
+        ls
+        cd mock-solution-test-automation
+        ls
+        cd ..
+    
+    # build project
+    - name: Build project
+      run: |
+       dotnet build ./mock-solution-test-automation/Source/ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation/ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.csproj --configuration $buildConfiguration -p:UsingGitHubSource=true
+    
+    # run Unit Tests
+    - name: Run Unit Tests
+      run: |
+        dotnet test ./mock-solution-test-automation/Source/ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UnitTests/ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UnitTests.csproj --configuration $buildConfiguration -p:UsingGitHubSource=true --verbosity normal --logger "trx;LogFileName=unittests.trx"
+
+    # publish test results
+    - name: Publish Unit Test Results  
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()
+      with:
+       trx_files: "./mock-solution-test-automation/Source/ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UnitTests/TestResults/unittests.trx"
+    
+    # build nuget pacakge
+    - name: Build the mock-solution-test-automation nuget package
+      run: |
+        dotnet pack ./mock-solution-test-automation/Source/ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation/ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.csproj --configuration $buildConfiguration --no-build
