@@ -1,4 +1,4 @@
-![Consumer Data Right Logo](https://github.com/ConsumerDataRight/mock-solution-test-automation/blob/main/Assets/cdr-logo.png?raw=true) 
+![Consumer Data Right Logo](https://raw.githubusercontent.com/ConsumerDataRight/mock-solution-test-automation/main/Assets/cdr-logo.png)
 
 [![made-with-dotnet](https://img.shields.io/badge/Made%20with-.NET-1f425Ff.svg)](https://dotnet.microsoft.com/)
 [![made-with-csharp](https://img.shields.io/badge/Made%20with-C%23-1f425Ff.svg)](https://docs.microsoft.com/en-us/dotnet/csharp/)
