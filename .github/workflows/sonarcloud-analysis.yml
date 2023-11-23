@@ -74,5 +74,5 @@ jobs:
         shell: powershell
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"ConsumerDataRight_mock-solution-test-automation" /o:"consumerdataright" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-          dotnet build .\Source\ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.sln --configuration {{ env.buildConfiguration }} -p:UsingGitHubSource=true
+          dotnet build .\Source\ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.sln --configuration $env.buildConfiguration -p:UsingGitHubSource=true
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
