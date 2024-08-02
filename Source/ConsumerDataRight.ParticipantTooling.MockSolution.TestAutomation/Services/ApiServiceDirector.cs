@@ -25,7 +25,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
         public ApiService BuildUserInfoAPI(string? xv, string? accessToken, string? thumbprint, HttpMethod? httpMethod, string certFilename = Constants.Certificates.CertificateFilename, string certPassword = Constants.Certificates.CertificatePassword)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}", nameof(BuildUserInfoAPI), nameof(ApiServiceDirector));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(BuildUserInfoAPI), nameof(ApiServiceDirector));
 
             _builder = new ApiServiceBuilder();
 
@@ -46,7 +46,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
         public ApiService BuildAuthServerAuthorizeAPI(Dictionary<string, string?> queryString)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}", nameof(BuildAuthServerAuthorizeAPI), nameof(ApiServiceDirector));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(BuildAuthServerAuthorizeAPI), nameof(ApiServiceDirector));
 
             _builder = new ApiServiceBuilder();
 
@@ -58,7 +58,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
         public ApiService BuildDataholderRegisterAPI(string? accessToken, string? registrationRequest, HttpMethod? httpMethod, string clientId = "")
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}", nameof(BuildDataholderRegisterAPI), nameof(ApiServiceDirector));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(BuildDataholderRegisterAPI), nameof(ApiServiceDirector));
 
             _builder = new ApiServiceBuilder();
 
@@ -85,7 +85,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
         public ApiService BuildRegisterSSAAPI(Industry? industry, string brandId, string softwareProductId, string? accessToken, string? xv)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}", nameof(BuildRegisterSSAAPI), nameof(ApiServiceDirector));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(BuildRegisterSSAAPI), nameof(ApiServiceDirector));
 
             _builder = new ApiServiceBuilder();
 
@@ -101,7 +101,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
         }
         public ApiService BuildAuthServerOpenIdConfigurationAPI()
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}", nameof(BuildAuthServerOpenIdConfigurationAPI), nameof(ApiServiceDirector));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(BuildAuthServerOpenIdConfigurationAPI), nameof(ApiServiceDirector));
 
             _builder = new ApiServiceBuilder();
 
@@ -115,7 +115,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
         }
         public ApiService BuildCustomerResourceAPI(string? accessToken)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}", nameof(BuildCustomerResourceAPI), nameof(ApiServiceDirector));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(BuildCustomerResourceAPI), nameof(ApiServiceDirector));
 
             _builder = new ApiServiceBuilder();
 
@@ -133,7 +133,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
         public ApiService BuildAuthServerJWKSAPI()
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}", nameof(BuildAuthServerJWKSAPI), nameof(ApiServiceDirector));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(BuildAuthServerJWKSAPI), nameof(ApiServiceDirector));
 
             _builder = new ApiServiceBuilder();
 
@@ -148,7 +148,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
         public ApiService BuildDataHolderDiscoveryStatusAPI()
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}", nameof(BuildDataHolderDiscoveryStatusAPI), nameof(ApiServiceDirector));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(BuildDataHolderDiscoveryStatusAPI), nameof(ApiServiceDirector));
 
             _builder = new ApiServiceBuilder();
 
@@ -161,7 +161,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
         public ApiService BuildDataHolderDiscoveryOutagesAPI()
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}", nameof(BuildDataHolderDiscoveryOutagesAPI), nameof(ApiServiceDirector));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(BuildDataHolderDiscoveryOutagesAPI), nameof(ApiServiceDirector));
 
             _builder = new ApiServiceBuilder();
 
@@ -174,7 +174,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
         public ApiService BuildDataHolderCommonGetCustomerAPI(string? accessToken, string? xFapiAuthDate, string? xv = "1", string certFileName = Constants.Certificates.CertificateFilename, string certPassword = Constants.Certificates.CertificatePassword)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}", nameof(BuildDataHolderCommonGetCustomerAPI), nameof(ApiServiceDirector));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(BuildDataHolderCommonGetCustomerAPI), nameof(ApiServiceDirector));
 
             _builder = new ApiServiceBuilder();
 
@@ -188,9 +188,9 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                  .WithAccessToken(accessToken)
                  .Build();
         }
-        public ApiService BuildDataHolderBankingGetAccountsAPI(string? accessToken, string? xFapiAuthDate, string? xv = "1", string? xFapiInteractionId = null, string certFileName = Constants.Certificates.CertificateFilename, string certPassword = Constants.Certificates.CertificatePassword, string? url = null)
+        public ApiService BuildDataHolderBankingGetAccountsAPI(string? accessToken, string? xFapiAuthDate, string? xv = "2", string? xFapiInteractionId = null, string certFileName = Constants.Certificates.CertificateFilename, string certPassword = Constants.Certificates.CertificatePassword, string? url = null)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}", nameof(BuildDataHolderBankingGetAccountsAPI), nameof(ApiServiceDirector));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(BuildDataHolderBankingGetAccountsAPI), nameof(ApiServiceDirector));
 
             _builder = new ApiServiceBuilder();
 
@@ -213,7 +213,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
         public ApiService BuildDataHolderBankingGetTransactionsAPI(string? accessToken, string? xFapiAuthDate, string? encryptedAccountId = null, string? xv = "1", string? xFapiInteractionId = null, string certFileName = Constants.Certificates.CertificateFilename, string certPassword = Constants.Certificates.CertificatePassword, string? url = null)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}", nameof(BuildDataHolderBankingGetTransactionsAPI), nameof(ApiServiceDirector));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(BuildDataHolderBankingGetTransactionsAPI), nameof(ApiServiceDirector));
 
             if (encryptedAccountId != null && url != null)
             {
@@ -245,7 +245,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
         public ApiService BuildDataHolderEnergyGetAccountsAPI(string? accessToken, string? xFapiAuthDate, string? xv = "1", string? xMinV = null, string? xFapiInteractionId = null, string certFileName = Constants.Certificates.CertificateFilename, string certPassword = Constants.Certificates.CertificatePassword, string? url = null)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}", nameof(BuildDataHolderEnergyGetAccountsAPI), nameof(ApiServiceDirector));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(BuildDataHolderEnergyGetAccountsAPI), nameof(ApiServiceDirector));
 
             _builder = new ApiServiceBuilder();
 
@@ -273,7 +273,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
         public ApiService BuildDataHolderEnergyGetConcessionsAPI(string? accessToken, string? xFapiAuthDate, string? encryptedAccountId = null, string? xv = "1", string certFileName = Constants.Certificates.CertificateFilename, string certPassword = Constants.Certificates.CertificatePassword, string? url = null)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}", nameof(BuildDataHolderEnergyGetConcessionsAPI), nameof(ApiServiceDirector));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(BuildDataHolderEnergyGetConcessionsAPI), nameof(ApiServiceDirector));
 
             _builder = new ApiServiceBuilder();
 

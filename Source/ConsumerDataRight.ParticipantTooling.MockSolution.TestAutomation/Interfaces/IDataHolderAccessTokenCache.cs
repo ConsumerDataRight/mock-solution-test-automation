@@ -8,7 +8,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Inter
         int Misses { get; }
 
         void ClearCache();
-        Task<string?> GetAccessToken(TokenType tokenType, string? scope = null, bool useCache = true);
+        Task<string?> GetAccessToken(TokenType tokenType, string? scope = null, bool useCache = true, ResponseType responseType = ResponseType.Code, ResponseMode responseMode = ResponseMode.Jwt);
 
     }
 }

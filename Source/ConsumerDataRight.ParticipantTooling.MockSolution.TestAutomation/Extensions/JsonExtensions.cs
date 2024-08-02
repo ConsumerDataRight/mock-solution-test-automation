@@ -18,9 +18,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exten
 
             var jsonObj = System.Text.Json.JsonSerializer.Deserialize<object>(json);
             var jsonStr = System.Text.Json.JsonSerializer.Serialize(jsonObj, options);
-
-            //var jsonObj = JsonConvert.DeserializeObject(json);
-            //var jsonStr = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
+            
             File.WriteAllText(filename, jsonStr);
         }
 
@@ -61,7 +59,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exten
             
             if (string.IsNullOrEmpty(responseContent))
             {
-                return default(T);
+                return default;
             }
 
             return JsonConvert.DeserializeObject<T>(responseContent);

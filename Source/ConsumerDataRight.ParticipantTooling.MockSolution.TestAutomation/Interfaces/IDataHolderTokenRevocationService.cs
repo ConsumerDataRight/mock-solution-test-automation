@@ -1,8 +1,4 @@
-﻿using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation;
-using System.Net.Http;
-using System.Threading.Tasks;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces
 {
     public interface IDataHolderTokenRevocationService
     {

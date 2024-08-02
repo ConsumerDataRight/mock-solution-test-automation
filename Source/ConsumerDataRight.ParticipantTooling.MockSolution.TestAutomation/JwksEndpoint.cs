@@ -29,7 +29,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
 
         public void Start()
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(Start), nameof(JwksEndpoint));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(Start), nameof(JwksEndpoint));
 
             _host = new WebHostBuilder()
                 .UseKestrel(opts =>
@@ -44,7 +44,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
 
         public async Task Stop()
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(Stop), nameof(JwksEndpoint));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(Stop), nameof(JwksEndpoint));
 
             if (_host != null)
             {
@@ -55,7 +55,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
         bool _disposed;
         public async ValueTask DisposeAsync()
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(DisposeAsync), nameof(JwksEndpoint));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(DisposeAsync), nameof(JwksEndpoint));
 
             if (!_disposed)
             {

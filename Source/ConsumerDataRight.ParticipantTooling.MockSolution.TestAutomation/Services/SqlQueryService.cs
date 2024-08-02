@@ -24,7 +24,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
         /// </summary>
         public string GetClientId(string softwareProductId)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(GetClientId), nameof(SqlQueryService));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(GetClientId), nameof(SqlQueryService));
 
             using var connection = new SqlConnection(_options.AUTHSERVER_CONNECTIONSTRING);
 
@@ -46,7 +46,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
         public string GetStatus(EntityType entityType, string id)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(GetStatus), nameof(SqlQueryService));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(GetStatus), nameof(SqlQueryService));
 
             using var connection = new SqlConnection(_options.AUTHSERVER_CONNECTIONSTRING);
             connection.Open();
@@ -60,7 +60,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
         public void SetStatus(EntityType entityType, string id, string status)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(SetStatus), nameof(SqlQueryService));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(SetStatus), nameof(SqlQueryService));
 
             using var connection = new SqlConnection(_options.AUTHSERVER_CONNECTIONSTRING);
             connection.Open();

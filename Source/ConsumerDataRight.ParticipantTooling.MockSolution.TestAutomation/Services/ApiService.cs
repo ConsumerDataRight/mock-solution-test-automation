@@ -119,99 +119,102 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
         /// <returns>The API response</returns>
         public async Task<HttpResponseMessage> SendAsync(bool allowAutoRedirect = true, string? xtlsThumbprint = null)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}", nameof(SendAsync), nameof(ApiService));
-            // Build request
-            HttpRequestMessage BuildRequest()
-            {
-                if (HttpMethod == null) { throw new InvalidOperationException($"{nameof(ApiService)}.{nameof(SendAsync)}.{nameof(BuildRequest)} - {nameof(HttpMethod)} not set").Log(); }
-                if (URL == null) { throw new InvalidOperationException($"{nameof(ApiService)}.{nameof(SendAsync)}.{nameof(BuildRequest)} - {nameof(URL)} not set").Log(); }
-
-                var request = new HttpRequestMessage(HttpMethod, URL);
-
-                // Attach access token if provided
-                if (AccessToken != null)
-                {
-                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
-                }
-
-                // Set AuthenticationHeaderValue explicity
-                if (AuthenticationHeaderValue != null)
-                {
-                    if (AccessToken != null)
-                    {
-                        throw new InvalidOperationException($"{nameof(ApiService)}.{nameof(SendAsync)} - Can't use both AccessToken and AuthenticationHeaderValue.").Log();
-                    }
-
-                    request.Headers.Authorization = AuthenticationHeaderValue;
-                }
-
-                // Set x-v header if provided
-                if (XV != null)
-                {
-                    request.Headers.Add("x-v", XV);
-                }
-
-                // Set x-min-v header if provided
-                if (XMinV != null)
-                {
-                    request.Headers.Add("x-min-v", XMinV);
-                }
-
-                // Set If-None-Match header if provided
-                if (IfNoneMatch != null)
-                {
-                    request.Headers.Add("If-None-Match", $"\"{IfNoneMatch}\"");
-                }
-
-                // Set x-fapi-auth-date header if provided
-                if (XFapiAuthDate != null)
-                {
-                    request.Headers.Add("x-fapi-auth-date", XFapiAuthDate);
-                }
-
-                // Set x-fapi-interaction-id header if provided
-                if (XFapiInteractionId != null)
-                {
-                    request.Headers.Add("x-fapi-interaction-id", XFapiInteractionId);
-                }
-
-                // Set content
-                if (Content != null)
-                {
-                    request.Content = Content;
-
-                    // Set content type
-                    if (ContentType != null)
-                    {
-                        request.Content.Headers.ContentType = ContentType;
-                    }
-                }
-
-                // Set request Accept header
-                if (Accept != null)
-                {
-                    request.Headers.TryAddWithoutValidation("Accept", Accept);
-                }
-
-                return request;
-            }
-
-            // Send request and return response
-            async Task<HttpResponseMessage> SendRequest(HttpRequestMessage request)
-            {
-                using var client = Helpers.Web.CreateHttpClient(CertificateFilename, CertificatePassword, allowAutoRedirect, Cookies, request);
-
-                Helpers.AuthServer.AttachHeadersForStandAlone(request.RequestUri?.AbsoluteUri ?? throw new NullReferenceException(), request.Headers, DhMtlsGatewayUrl, XtlsClientCertificateThumbprint, IsStandalone);
-
-                var response = await client.SendAsync(request);
-
-                return response;
-            }
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(SendAsync), nameof(ApiService));
 
             var request = BuildRequest();
-            var response = await SendRequest(request);
-            return response;
+            AttachHeaders(request);
+
+            return await SendRequest(request, allowAutoRedirect);
         }
+
+        private HttpRequestMessage BuildRequest()
+        {
+            EnsureHttpMethodAndUrlAreSet();
+
+            var request = new HttpRequestMessage(HttpMethod, URL);
+
+            AddAuthorizationHeader(request);
+            AddOptionalHeaders(request);
+            SetContent(request);
+
+            return request;
+        }
+
+        private void EnsureHttpMethodAndUrlAreSet()
+        {
+            if (HttpMethod == null)
+            {
+                throw new InvalidOperationException($"{nameof(ApiService)}.{nameof(SendAsync)}.{nameof(BuildRequest)} - {nameof(HttpMethod)} not set").Log();
+            }
+
+            if (URL == null)
+            {
+                throw new InvalidOperationException($"{nameof(ApiService)}.{nameof(SendAsync)}.{nameof(BuildRequest)} - {nameof(URL)} not set").Log();
+            }
+        }
+
+        private void AddAuthorizationHeader(HttpRequestMessage request)
+        {
+            if (AccessToken != null)
+            {
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
+            }
+
+            if (AuthenticationHeaderValue != null)
+            {
+                if (AccessToken != null)
+                {
+                    throw new InvalidOperationException($"{nameof(ApiService)}.{nameof(SendAsync)} - Can't use both AccessToken and AuthenticationHeaderValue.").Log();
+                }
+
+                request.Headers.Authorization = AuthenticationHeaderValue;
+            }
+        }
+
+        private void AddOptionalHeaders(HttpRequestMessage request)
+        {
+            AddHeader(request, "x-v", XV);
+            AddHeader(request, "x-min-v", XMinV);
+            AddHeader(request, "If-None-Match", IfNoneMatch, format: value => $"\"{value}\"");
+            AddHeader(request, "x-fapi-auth-date", XFapiAuthDate);
+            AddHeader(request, "x-fapi-interaction-id", XFapiInteractionId);
+            AddHeader(request, "Accept", Accept);
+        }
+
+        private static void AddHeader(HttpRequestMessage request, string headerName, string? headerValue, Func<string, string>? format = null)
+        {
+            if (headerValue != null)
+            {
+                request.Headers.Add(headerName, format != null ? format(headerValue) : headerValue);
+            }
+        }
+
+        private void SetContent(HttpRequestMessage request)
+        {
+            if (Content != null)
+            {
+                request.Content = Content;
+
+                if (ContentType != null)
+                {
+                    request.Content.Headers.ContentType = ContentType;
+                }
+            }
+        }
+
+        private void AttachHeaders(HttpRequestMessage request)
+        {
+            Helpers.AuthServer.AttachHeadersForStandAlone(
+                request.RequestUri?.AbsoluteUri ?? throw new InvalidOperationException("AbsoluteUri is null"),
+                request.Headers, DhMtlsGatewayUrl, XtlsClientCertificateThumbprint, IsStandalone);
+        }
+
+        private async Task<HttpResponseMessage> SendRequest(HttpRequestMessage request, bool allowAutoRedirect)
+        {
+            using var client = Helpers.Web.CreateHttpClient(CertificateFilename, CertificatePassword, allowAutoRedirect, Cookies, request);
+            return await client.SendAsync(request);
+        }
+
 
         public class ApiServiceBuilder : IBuilder<ApiService>
         {

@@ -1,10 +1,8 @@
 using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
 using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
 using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Services;
 using Microsoft.AspNetCore.WebUtilities;
 using Serilog;
-using static ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Services.DataHolderAuthoriseService;
 
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.APIs
 {

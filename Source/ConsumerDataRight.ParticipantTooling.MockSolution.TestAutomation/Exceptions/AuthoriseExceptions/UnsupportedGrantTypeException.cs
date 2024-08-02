@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.AuthoriseExceptions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.AuthoriseExceptions
 {
-    [Serializable]
     public class UnsupportedGrantTypeException : AuthoriseException
     {
         /// <summary>
@@ -16,18 +13,11 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
         public UnsupportedGrantTypeException()
       : base(string.Empty, System.Net.HttpStatusCode.BadRequest, "unsupported_grant_type", Constants.ErrorMessages.General.UnsupportedGrantType)
         { }
-
-        protected UnsupportedGrantTypeException(SerializationInfo info, StreamingContext context) : base(info, context)
-        { }
     }
 
-    [Serializable]
     public class MissingGrantTypeException : UnsupportedGrantTypeException
     {
         public MissingGrantTypeException() : base(Constants.ErrorMessages.General.GrantTypeNotProvided)
-        { }
-
-        protected MissingGrantTypeException(SerializationInfo info, StreamingContext context) : base(info, context)
         { }
     }
 

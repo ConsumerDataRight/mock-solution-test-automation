@@ -1,9 +1,7 @@
-﻿using System.Runtime.Serialization;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+﻿using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
 
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
 {
-    [Serializable]
     public class InvalidArrangementException : CdrException
     {
         /// <summary>
@@ -18,9 +16,6 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
 
         public InvalidArrangementException(string detail)
           : base(CdsError.InvalidConsentArrangement, detail, System.Net.HttpStatusCode.UnprocessableEntity, null)
-        { }
-
-        protected InvalidArrangementException(SerializationInfo info, StreamingContext context) : base(info, context)
         { }
     }
 }

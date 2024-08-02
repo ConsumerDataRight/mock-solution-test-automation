@@ -4,8 +4,6 @@ using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interface
 using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
 using Microsoft.Extensions.Options;
 using Serilog;
-using static ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Constants;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Services
 {
@@ -41,11 +39,13 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             public string? UserId { get; init; }
             public string? SelectedAccounts { get; init; }
             public string? Scope { get; init; }
+            public ResponseType ResponseType { get; init; }
+            public ResponseMode ResponseMode { get; init; }
 
             public string? AccessToken { get; set; }
         }
 
-        public async Task<string?> GetAccessToken(TokenType tokenType, string? scope = null, bool useCache = true)
+        public async Task<string?> GetAccessToken(TokenType tokenType, string? scope = null, bool useCache = true, ResponseType responseType = ResponseType.Code, ResponseMode responseMode = ResponseMode.Jwt)
         {
             Log.Information("Calling {FUNCTION} in {ClassName} with Params: {P1}={V1},{P2}={V2},{P3}={V3}.", nameof(GetAccessToken), nameof(DataHolderAccessTokenCache), nameof(tokenType), tokenType, nameof(scope), scope, nameof(useCache), useCache);
 
@@ -61,7 +61,9 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 case TokenType.Beverage:
                 case TokenType.KamillaSmith:
                     {
-                        return await GetAccessToken(tokenType.GetUserIdByTokenType(), tokenType.GetAllAccountIdsByTokenType(), scope, useCache);
+                        var userId = tokenType.GetUserIdByTokenType() ?? throw new ArgumentException($"GetUserIdByTokenType failed for {nameof(TokenType)}={tokenType}.");
+                        var acountIds = tokenType.GetAllAccountIdsByTokenType() ?? throw new ArgumentException($"GetAllAccountIdsByTokenType failed for {nameof(TokenType)}={tokenType}.");
+                        return await GetAccessToken(userId, acountIds, scope, useCache, responseType: responseType, responseMode: responseMode);
                     }
 
                 case TokenType.InvalidFoo:
@@ -80,7 +82,9 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             string userId,
             string selectedAccounts,
             string? scope = null,
-            bool useCache = true
+            bool useCache = true,
+            ResponseType responseType = ResponseType.Code,
+            ResponseMode responseMode = ResponseMode.Jwt
             )
         {
             Log.Information("Calling {FUNCTION} in {ClassName} with Params: {P1}={V1},{P2}={V2},{P3}={V3},{P4}={V4}.", nameof(GetAccessToken), nameof(DataHolderAccessTokenCache), nameof(userId), userId, nameof(selectedAccounts), selectedAccounts, nameof(scope), scope, nameof(useCache), useCache);
@@ -97,13 +101,15 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 cacheHit = _cache.Find(item =>
                 item.UserId == userId &&
                 item.SelectedAccounts == selectedAccounts &&
-                item.Scope == scope);
+                item.Scope == scope &&
+                item.ResponseType == responseType &&
+                item.ResponseMode == responseMode);
             }
 
             // Cache hit
             if (cacheHit != null)
             {
-                Log.Information("{UserId} token was found in the {cache}.", userId, nameof(DataHolderAccessTokenCache));
+                Log.Information("{UserId} token was found in the {Cache}.", userId, nameof(DataHolderAccessTokenCache));
                 Hits++;
 
                 return cacheHit.AccessToken;
@@ -111,10 +117,10 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             // Cache miss, so perform auth/consent flow to get accesstoken/refreshtoken
             else
             {
-                Log.Information("{UserId} token was not found in the {cache}. Performing AuthConsentFlow", userId, nameof(DataHolderAccessTokenCache));
+                Log.Information("{UserId} token was not found in the {Cache}. Performing AuthConsentFlow", userId, nameof(DataHolderAccessTokenCache));
                 Misses++;
 
-                (var accessToken, _) = await FromAuthConsentFlow(userId, selectedAccounts, scope);
+                (var accessToken, _) = await FromAuthConsentFlow(userId, selectedAccounts, scope, responseType: responseType, responseMode: responseMode);
 
                 // Add refresh token to cache
                 _cache.Add(new CacheItem
@@ -122,7 +128,9 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                     UserId = userId,
                     SelectedAccounts = selectedAccounts,
                     Scope = scope,
-                    AccessToken = accessToken
+                    AccessToken = accessToken,
+                    ResponseType = responseType,
+                    ResponseMode = responseMode,
                 });
 
                 // Return access token
@@ -132,7 +140,9 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
         private async Task<(string accessToken, string refreshToken)> FromAuthConsentFlow(string userId,
             string selectedAccounts,
-            string? scope = null)
+            string? scope = null,
+            ResponseType responseType = ResponseType.Code,
+            ResponseMode responseMode = ResponseMode.Jwt)
         {
             if (string.IsNullOrEmpty(scope))
             {
@@ -146,6 +156,8 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                  .WithUserId(userId)
                  .WithScope(scope)
                  .WithSelectedAccountIds(selectedAccounts)
+                 .WithResponseType(responseType)
+                 .WithResponseMode(responseMode)
                  .BuildAsync();
             }
             else
@@ -154,7 +166,8 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 .WithUserId(userId)
                 .WithScope(scope)
                 .WithSelectedAccountIds(selectedAccounts)
-                .WithResponseMode(ResponseMode.FormPost)
+                .WithResponseType(responseType)
+                .WithResponseMode(responseMode)
                 .BuildAsync();
             }
 
@@ -166,14 +179,14 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             if (tokenResponse?.AccessToken == null)
                 throw new InvalidOperationException($"{nameof(FromAuthConsentFlow)} - access token is null").Log();
 
-            if (tokenResponse?.RefreshToken == null)
+            if (tokenResponse.RefreshToken == null)
                 throw new InvalidOperationException($"{nameof(FromAuthConsentFlow)} - refresh token is null").Log();
 
             return (tokenResponse.AccessToken, tokenResponse.RefreshToken);
         }
         public void ClearCache()
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}", nameof(ClearCache), nameof(DataHolderAccessTokenCache));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(ClearCache), nameof(DataHolderAccessTokenCache));
             _cache.Clear();
         }
 

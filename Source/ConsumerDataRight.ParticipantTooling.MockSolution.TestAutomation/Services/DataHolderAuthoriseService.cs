@@ -1,9 +1,11 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
-using System.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Web;
 using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.APIs;
 using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
 using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions;
+using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.AuthoriseExceptions;
 using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
 using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
 using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
@@ -12,6 +14,7 @@ using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pages.
 using Dapper;
 using FluentAssertions;
 using HtmlAgilityPack;
+using Jose;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Data.SqlClient;
 using Microsoft.Playwright;
@@ -74,8 +77,8 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
         public string JwtCertificateFilename { get; private set; }
         public string JwtCertificatePassword { get; private set; }
 
-        public ResponseType ResponseType { get; private set; }
-        public ResponseMode ResponseMode { get; private set; } = ResponseMode.Fragment;
+        public ResponseType ResponseType { get; private set; } = ResponseType.Code;
+        public ResponseMode ResponseMode { get; private set; } = ResponseMode.Jwt;
 
         public string? CdrArrangementId { get; private set; }
 
@@ -198,6 +201,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                                sharingDuration: _dataHolderAuthoriseService.SharingDuration,
                                clientId: _dataHolderAuthoriseService.ClientId,
                                cdrArrangementId: _dataHolderAuthoriseService.CdrArrangementId,
+                               responseType: _dataHolderAuthoriseService.ResponseType,
                                responseMode: _dataHolderAuthoriseService.ResponseMode
                            );
                     }
@@ -220,6 +224,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                            scope: _dataHolderAuthoriseService.Scope,
                            sharingDuration: _dataHolderAuthoriseService.SharingDuration,
                            clientId: _dataHolderAuthoriseService.ClientId,
+                           responseType: _dataHolderAuthoriseService.ResponseType,
                            responseMode: _dataHolderAuthoriseService.ResponseMode,
                            cdrArrangementId: _dataHolderAuthoriseService.CdrArrangementId
                            );
@@ -233,74 +238,68 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             {
                 Log.Information("Filling missing defaults for public properties");
 
-                var _options = _dataHolderAuthoriseService.TestAutomationOptions; //purely to shorten reference
+                var options = _dataHolderAuthoriseService.TestAutomationOptions; // purely to shorten reference
 
-                //Anything that doesn't have a value which should...will get it's default value set
-                if (_dataHolderAuthoriseService.ClientId.IsNullOrWhiteSpace())
-                {
-                    _dataHolderAuthoriseService.ClientId = _options.LastRegisteredClientId ?? throw new InvalidOperationException($"{nameof(_options.LastRegisteredClientId)} should not be null.").Log();
-                    Log.Information("Assigned default value {VALUE} to Parameter {PARAM}", _dataHolderAuthoriseService.ClientId, nameof(ClientId));
-                }
+                SetDefaultValueIfEmpty(_dataHolderAuthoriseService.ClientId, _dataHolderAuthoriseService,
+                    () => options.LastRegisteredClientId ?? throw new InvalidOperationException($"{nameof(options.LastRegisteredClientId)} should not be null.").Log(),
+                    nameof(ClientId));
 
-                if (_dataHolderAuthoriseService.RedirectURI.IsNullOrWhiteSpace())
-                {
-                    _dataHolderAuthoriseService.RedirectURI = _useAdditionalDefaults ? _options.ADDITIONAL_SOFTWAREPRODUCT_REDIRECT_URI_FOR_INTEGRATION_TESTS : _options.SOFTWAREPRODUCT_REDIRECT_URI_FOR_INTEGRATION_TESTS;
-                    Log.Information("Assigned default value {VALUE} to Parameter {PARAM}", _dataHolderAuthoriseService.RedirectURI, nameof(RedirectURI));
-                }
+                SetDefaultValueIfEmpty(_dataHolderAuthoriseService.RedirectURI, _dataHolderAuthoriseService,
+                    () => _useAdditionalDefaults ? options.ADDITIONAL_SOFTWAREPRODUCT_REDIRECT_URI_FOR_INTEGRATION_TESTS : options.SOFTWAREPRODUCT_REDIRECT_URI_FOR_INTEGRATION_TESTS,
+                    nameof(RedirectURI));
 
-                if (_dataHolderAuthoriseService.Scope.IsNullOrWhiteSpace())
-                {
-                    _dataHolderAuthoriseService.Scope = _options.SCOPE;
-                    Log.Information("Assigned default value {VALUE} to Parameter {PARAM}", _dataHolderAuthoriseService.Scope, nameof(Scope));
-                }
+                SetDefaultValueIfEmpty(_dataHolderAuthoriseService.Scope, _dataHolderAuthoriseService,
+                    () => options.SCOPE,
+                    nameof(Scope));
 
-                if (_dataHolderAuthoriseService.SelectedAccountIds.IsNullOrWhiteSpace())
-                {
-                    _dataHolderAuthoriseService.SelectedAccountIds = GetAccountIdsForUser(_dataHolderAuthoriseService.UserId);
-                    Log.Information("Assigned default value {VALUE} to Parameter {PARAM}", _dataHolderAuthoriseService.SelectedAccountIds, nameof(SelectedAccountIds));
-                }
+                SetDefaultValueIfEmpty(_dataHolderAuthoriseService.SelectedAccountIds, _dataHolderAuthoriseService,
+                    () => GetAccountIdsForUser(_dataHolderAuthoriseService.UserId),
+                    nameof(SelectedAccountIds));
 
-                if (_dataHolderAuthoriseService.CertificateFilename.IsNullOrWhiteSpace())
-                {
-                    _dataHolderAuthoriseService.CertificateFilename = _useAdditionalDefaults ? Constants.Certificates.AdditionalCertificateFilename : Constants.Certificates.CertificateFilename;
-                    Log.Information("Assigned default value {VALUE} to Parameter {PARAM}", _dataHolderAuthoriseService.CertificateFilename, nameof(CertificateFilename));
-                }
+                SetDefaultValueIfEmpty(_dataHolderAuthoriseService.CertificateFilename, _dataHolderAuthoriseService,
+                    () => _useAdditionalDefaults ? Constants.Certificates.AdditionalCertificateFilename : Constants.Certificates.CertificateFilename,
+                    nameof(CertificateFilename));
 
-                if (_dataHolderAuthoriseService.CertificatePassword.IsNullOrWhiteSpace())
-                {
-                    _dataHolderAuthoriseService.CertificatePassword = _useAdditionalDefaults ? Constants.Certificates.AdditionalCertificatePassword : Constants.Certificates.CertificatePassword;
-                    Log.Information("Assigned default value {VALUE} to Parameter {PARAM}", _dataHolderAuthoriseService.CertificatePassword, nameof(CertificatePassword));
-                }
+                SetDefaultValueIfEmpty(_dataHolderAuthoriseService.CertificatePassword, _dataHolderAuthoriseService,
+                    () => _useAdditionalDefaults ? Constants.Certificates.AdditionalCertificatePassword : Constants.Certificates.CertificatePassword,
+                    nameof(CertificatePassword));
 
-                if (_dataHolderAuthoriseService.JwtCertificateFilename.IsNullOrWhiteSpace())
-                {
-                    _dataHolderAuthoriseService.JwtCertificateFilename = _useAdditionalDefaults ? Constants.Certificates.AdditionalJwksCertificateFilename : Constants.Certificates.JwtCertificateFilename;
-                    Log.Information("Assigned default value {VALUE} to Parameter {PARAM}", _dataHolderAuthoriseService.JwtCertificateFilename, nameof(JwtCertificateFilename));
-                }
+                SetDefaultValueIfEmpty(_dataHolderAuthoriseService.JwtCertificateFilename, _dataHolderAuthoriseService,
+                    () => _useAdditionalDefaults ? Constants.Certificates.AdditionalJwksCertificateFilename : Constants.Certificates.JwtCertificateFilename,
+                    nameof(JwtCertificateFilename));
 
-                if (_dataHolderAuthoriseService.JwtCertificatePassword.IsNullOrWhiteSpace())
+                SetDefaultValueIfEmpty(_dataHolderAuthoriseService.JwtCertificatePassword, _dataHolderAuthoriseService,
+                    () => _useAdditionalDefaults ? Constants.Certificates.AdditionalJwksCertificatePassword : Constants.Certificates.JwtCertificatePassword,
+                    nameof(JwtCertificatePassword));
+            }
+
+            private static void SetDefaultValueIfEmpty(string property, object target, Func<string> getDefaultValue, string propertyName)
+            {
+                if (property.IsNullOrWhiteSpace())
                 {
-                    _dataHolderAuthoriseService.JwtCertificatePassword = _useAdditionalDefaults ? Constants.Certificates.AdditionalJwksCertificatePassword : Constants.Certificates.JwtCertificatePassword;
-                    Log.Information("Assigned default value {VALUE} to Parameter {PARAM}", _dataHolderAuthoriseService.JwtCertificatePassword, nameof(JwtCertificatePassword));
+                    var prop = target.GetType().GetProperty(propertyName);
+                    prop.SetValue(target, getDefaultValue());
+                    Log.Information("Assigned default value {VALUE} to Parameter {PARAM}", property, propertyName);
                 }
             }
+
 
             private void Validate()
             {
                 Log.Information("Validating {BUILTOBJECT} mandatory properties.", nameof(DataHolderAuthoriseService));
                 if (_dataHolderAuthoriseService.RedirectURI.IsNullOrWhiteSpace())
                 {
-                    throw new ArgumentNullException(nameof(RedirectURI)).Log();
+                    throw new InvalidRedirectUriException("RedirectURI is null or empty").Log();
                 }
 
                 if (_dataHolderAuthoriseService.ClientId.IsNullOrWhiteSpace())
                 {
-                    throw new ArgumentNullException(nameof(ClientId)).Log();
+                    throw new InvalidClientException("ClientId is null or empty").Log();
                 }
 
                 if (_dataHolderAuthoriseService.UserId.IsNullOrWhiteSpace())
                 {
-                    throw new ArgumentNullException(nameof(UserId)).Log();
+                    throw new InvalidClientException("UserId is null or empty").Log();
                 }
             }
 
@@ -316,9 +315,9 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             }
         }
 
-        public async Task<(string authCode, string idToken)> Authorise()
+        public async Task<(string authCode, string? idToken)> Authorise()
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(Authorise), nameof(DataHolderAuthoriseService));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(Authorise), nameof(DataHolderAuthoriseService));
 
             if (TestAutomationOptions.IS_AUTH_SERVER)
             {
@@ -335,25 +334,23 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             }
             else
             {
-                var responseMode = Enums.ResponseMode.FormPost.ToEnumMemberAttrValue(); //to ensure it's clearly consistent
+                Uri authRedirectUri = await Authorise_GetRedirectUri();
 
-                Uri authRedirectUri = await Authorise_GetRedirectUri(responseMode);
-
-                return await Authorize_Consent(authRedirectUri, responseMode);
+                return await Authorize_Consent(authRedirectUri);
             }
         }
 
         #region AuthServer
         public async Task<HttpResponseMessage> AuthoriseForJarm()
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(AuthoriseForJarm), nameof(DataHolderAuthoriseService));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(AuthoriseForJarm), nameof(DataHolderAuthoriseService));
 
             var callback = new DataRecipientConsentCallback(RedirectURI);
             callback.Start();
             try
             {
                 var cookieContainer = new CookieContainer();
-                var response = await AuthServer_Authorise(cookieContainer, false) ?? throw new NullReferenceException();
+                var response = await AuthServer_Authorise(cookieContainer, false) ?? throw new InvalidOperationException("Authorise response is null");
                 return response;
             }
             finally
@@ -365,9 +362,11 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
         /// <summary>
         /// Perform authorisation and consent flow. Returns authCode and idToken
         /// </summary>
-        private async Task<(string authCode, string idToken)> AuthoriseHeadless()
+        private async Task<(string authCode, string? idToken)> AuthoriseHeadless()
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(AuthoriseHeadless), nameof(DataHolderAuthoriseService));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(AuthoriseHeadless), nameof(DataHolderAuthoriseService));
+
+            bool allowRedirects = ResponseType == ResponseType.CodeIdToken;
 
             var callback = new DataRecipientConsentCallback(RedirectURI);
             callback.Start();
@@ -376,7 +375,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 var cookieContainer = new CookieContainer();
 
                 // "headless" workaround currently "{BaseTest.DH_TLS_AUTHSERVER_BASE_URL}/connect/authorize" redirects immediately to the callback uri (ie there's no UI)
-                var response = await AuthServer_Authorise(cookieContainer) ?? throw new NullReferenceException();
+                var response = await AuthServer_Authorise(cookieContainer, allowRedirects) ?? throw new InvalidOperationException("Authorization response was null.");
 
                 // Return authcode and idtoken
                 return ExtractAuthCodeIdToken(response);
@@ -384,37 +383,70 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             finally
             {
                 await callback.Stop();
-            }
+            }            
 
-            static (string authCode, string idToken) ExtractAuthCodeIdToken(HttpResponseMessage response)
+            (string authCode, string? idToken) ExtractAuthCodeIdToken(HttpResponseMessage response)
             {
-                Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(ExtractAuthCodeIdToken), nameof(DataHolderAuthoriseService));
+                Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(ExtractAuthCodeIdToken), nameof(DataHolderAuthoriseService));
 
-                var fragment = response.RequestMessage?.RequestUri?.Fragment;
-                if (fragment == null)
+                string? authCode = null;
+                string? idToken = null; 
+
+                // Handle Authorisation Code Flow response
+                if (ResponseType == ResponseType.Code)
                 {
-                    throw new Exception($"{nameof(ExtractAuthCodeIdToken)} - response fragment is null").Log();
+                    var queryValues = HttpUtility.ParseQueryString(response.Headers.Location?.Query ?? throw new InvalidOperationException("Query string parse result was null"));
+
+                    // Check query has "response" param
+                    var queryValueResponse = queryValues["response"];
+                    var encodedJwt = queryValueResponse;
+                    queryValueResponse.Should().NotBeNullOrEmpty();
+
+                    if (AuthServerOptions.JARM_ENCRYPTION_ON)
+                    {
+                        Log.Information("Authorisation Server has JARM Encryption turned on. JWT is being decrypted.");
+                        // Check claims of decode jwt   
+                        var encryptedJwt = new JwtSecurityTokenHandler().ReadJwtToken(encodedJwt);
+                        encryptedJwt.Header["alg"].Should().Be("RSA-OAEP", because: "JARM Encryption is turned on.");
+                        encryptedJwt.Header["enc"].Should().Be("A128CBC-HS256", because: "JARM Encryption is turned on.");
+                        // Decrypt the JARM JWT.
+                        var privateKeyCertificate = new X509Certificate2(JwtCertificateFilename, JwtCertificatePassword, X509KeyStorageFlags.Exportable);
+                        var privateKey = privateKeyCertificate.GetRSAPrivateKey();
+                        JweToken token = JWE.Decrypt(queryValueResponse, privateKey);
+                        encodedJwt = token.Plaintext;                        
+                    }
+
+                    // Return Authorisation Code
+                    var jwt = new JwtSecurityTokenHandler().ReadJwtToken(encodedJwt);                    
+                    authCode = jwt.Claim("code").Value;
+
+                }
+                // Handle Hybrid Flow response
+                else if (ResponseType == ResponseType.CodeIdToken) {
+                    var fragment = response.RequestMessage?.RequestUri?.Fragment;
+                    if (fragment == null)
+                    {
+                        throw new Exception($"{nameof(ExtractAuthCodeIdToken)} - response fragment is null").Log();
+                    }
+
+                    var query = HttpUtility.ParseQueryString(fragment.TrimStart('#'));
+
+                    authCode = query["code"];
+                    idToken = query["id_token"];
+                }
+                else
+                {
+                    throw new NotSupportedException($"Only '{ResponseType.Code.ToEnumMemberAttrValue()}' and '{ResponseType.CodeIdToken.ToEnumMemberAttrValue()}' Response types are supported.");
                 }
 
-                var query = HttpUtility.ParseQueryString(fragment.TrimStart('#'));
-
-                Exception RaiseException(string errorMessage, string? authCode, string? idToken)
-                {
-                    var responseRequestUri = response?.RequestMessage?.RequestUri;
-                    return new SecurityException($"{errorMessage}\r\nauthCode={authCode},idToken={idToken},response.RequestMessage.RequestUri={responseRequestUri}");
-                }
-
-                string? authCode = query["code"];
-                string? idToken = query["id_token"];
 
                 if (authCode == null)
                 {
-                    throw RaiseException("authCode is null", authCode, idToken);
+                    throw new InvalidOperationException("authCode cannot be null.");
                 }
 
-                if (idToken == null)
-                {
-                    throw RaiseException("idToken is null", authCode, idToken);
+                if (idToken == null && ResponseType == ResponseType.CodeIdToken) {
+                    throw new InvalidOperationException("idToken cannot be null for hybrid flow.");
                 }
 
                 return (authCode, idToken);
@@ -423,12 +455,12 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
         private async Task<HttpResponseMessage?> AuthServer_Authorise(CookieContainer cookieContainer, bool allowRedirect = true)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(AuthServer_Authorise), nameof(DataHolderAuthoriseService));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(AuthServer_Authorise), nameof(DataHolderAuthoriseService));
 
             var request = new HttpRequestMessage(HttpMethod.Get, AuthoriseUrl);
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference. This has been disabled because TestAutomationOptions is assigned in the constructor following a null check
-            Helpers.AuthServer.AttachHeadersForStandAlone(request.RequestUri?.AbsoluteUri ?? throw new NullReferenceException($"{nameof(request.RequestUri.AbsoluteUri)} is null").Log(), request.Headers, TestAutomationOptions.DH_MTLS_GATEWAY_URL, AuthServerOptions.XTLSCLIENTCERTTHUMBPRINT, AuthServerOptions.STANDALONE);
+            Helpers.AuthServer.AttachHeadersForStandAlone(request.RequestUri?.AbsoluteUri ?? throw new InvalidOperationException($"{nameof(request.RequestUri.AbsoluteUri)} is null").Log(), request.Headers, TestAutomationOptions.DH_MTLS_GATEWAY_URL, AuthServerOptions.XTLSCLIENTCERTTHUMBPRINT, AuthServerOptions.STANDALONE);
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
             var response = await Helpers.Web.CreateHttpClient(allowAutoRedirect: allowRedirect, cookieContainer: cookieContainer).SendAsync(request);
@@ -439,15 +471,15 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
         #region Dataholder
         // Call authorise endpoint, should respond with a redirect to auth UI, return the redirect URI
-        private async Task<Uri> Authorise_GetRedirectUri(string responseMode)
+        private async Task<Uri> Authorise_GetRedirectUri()
         {
-            Log.Information("Calling {FUNCTION} in {ClassName} with Params: {P1}={V1}.", nameof(Authorise_GetRedirectUri), nameof(DataHolderAuthoriseService), nameof(responseMode), responseMode);
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(Authorise_GetRedirectUri), nameof(DataHolderAuthoriseService));
 
             var queryString = new Dictionary<string, string?>
             {
                 { "request_uri", RequestUri },
-                { "response_type", ResponseType.CodeIdToken.ToEnumMemberAttrValue() },
-                { "response_mode", responseMode },
+                { "response_type", ResponseType.ToEnumMemberAttrValue() },
+                { "response_mode", ResponseMode.ToEnumMemberAttrValue() },
                 { "client_id", ClientId },
                 { "redirect_uri", RedirectURI },
                 { "scope", Scope },
@@ -470,13 +502,13 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 throw new AuthoriseException($"Expected {HttpStatusCode.Redirect} but got {response.StatusCode}", response.StatusCode, error, errorDescription); //TODO: This was the original code, but it's returning Ok when it should not be 200Ok. Bug 63710
             }
 
-            return response.Headers.Location ?? throw new NullReferenceException(nameof(response.Headers.Location.AbsoluteUri));
+            return response.Headers.Location ?? throw new InvalidOperationException($"{nameof(response.Headers.Location.AbsoluteUri)} is null");
         }
 
 
-        private async Task<(string authCode, string idToken)> Authorize_Consent(Uri authRedirectUri, string responseMode)
+        private async Task<(string authCode, string idToken)> Authorize_Consent(Uri authRedirectUri)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName} with Params: {P1}={V1},{P2}={V2}.", nameof(Authorize_Consent), nameof(DataHolderAuthoriseService), nameof(authRedirectUri), authRedirectUri, nameof(responseMode), responseMode);
+            Log.Information("Calling {FUNCTION} in {ClassName} with Params: {P1}={V1}.", nameof(Authorize_Consent), nameof(DataHolderAuthoriseService), nameof(authRedirectUri), authRedirectUri);
 
             var authRedirectLeftPart = authRedirectUri.GetLeftPart(UriPartial.Authority) + "/ui";
 
@@ -495,12 +527,12 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
                 // Username
                 AuthenticateLoginPage authenticateLoginPage = new(page);
-                await authenticateLoginPage.EnterCustomerId(UserId ?? throw new NullReferenceException(nameof(UserId)));
+                await authenticateLoginPage.EnterCustomerId(UserId ?? throw new InvalidOperationException($"{nameof(UserId)} is null"));
                 await authenticateLoginPage.ClickContinue();
 
                 // OTP
                 OneTimePasswordPage oneTimePasswordPage = new(page);
-                await oneTimePasswordPage.EnterOtp(OTP ?? throw new NullReferenceException(nameof(OTP)));
+                await oneTimePasswordPage.EnterOtp(OTP ?? throw new InvalidOperationException($"{nameof(OTP)} is null"));
                 await oneTimePasswordPage.ClickContinue();
 
                 // Select accounts
@@ -514,7 +546,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 // Confirmation - Click authorise and check callback response
                 ConfirmAccountSharingPage confirmAccountSharingPage = new(page);
 
-                (code, idtoken) = await HybridFlow_HandleCallback(redirectUri: RedirectURI, responseMode: responseMode, page: page, setup: async (page) =>
+                (code, idtoken) = await HandleDataRecipientCallback(redirectUri: RedirectURI, page: page, setup: async (page) =>
                     {
                         await confirmAccountSharingPage.ClickAuthorise();
                     });
@@ -529,15 +561,15 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             }
 
             return (
-                authCode: code ?? throw new NullReferenceException(nameof(code)),
-                idToken: idtoken ?? throw new NullReferenceException(nameof(idtoken))
+                authCode: code ?? throw new InvalidOperationException($"{nameof(code)} is null"),
+                idToken: idtoken ?? throw new InvalidOperationException($"{nameof(idtoken)} is null")
             );
         }
 
-        private delegate Task HybridFlow_HandleCallback_Setup(IPage page);
-        static private async Task<(string code, string idtoken)> HybridFlow_HandleCallback(string redirectUri, string responseMode, IPage page, HybridFlow_HandleCallback_Setup setup)
+        private delegate Task HandleDataRecipientCallback_Setup(IPage page);
+        private async Task<(string code, string idtoken)> HandleDataRecipientCallback(string redirectUri, IPage page, HandleDataRecipientCallback_Setup setup)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}", nameof(HybridFlow_HandleCallback), nameof(DataHolderAuthoriseService));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(HandleDataRecipientCallback), nameof(DataHolderAuthoriseService));
 
             var callback = new DataRecipientConsentCallback(redirectUri);
             callback.Start();
@@ -546,7 +578,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 await setup(page);
 
                 var callbackRequest = await callback.WaitForCallback();
-                switch (responseMode)
+                switch (ResponseMode.ToEnumMemberAttrValue())
                 {
                     case "form_post":
                         {
@@ -560,10 +592,19 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                             var id_token = body["id_token"];
                             return (code, id_token);
                         }
+                    case "jwt":
+                        {
+                            callbackRequest.Should().NotBeNull();
+                            callbackRequest?.received.Should().BeTrue();
+                            var queryValues = HttpUtility.ParseQueryString(callbackRequest?.queryString ?? throw new InvalidOperationException($"{nameof(callbackRequest.queryString)} is null"));
+                            var encodedJwt = queryValues["response"];
+                            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(encodedJwt);
+                            return (jwt.Claim("code").Value, "");
+                        }
                     case "fragment":
                     case "query":
                     default:
-                        throw new NotSupportedException(nameof(responseMode));
+                        throw new NotSupportedException(ResponseMode.ToEnumMemberAttrValue() + " response mode is not supported.");
                 }
             }
             finally

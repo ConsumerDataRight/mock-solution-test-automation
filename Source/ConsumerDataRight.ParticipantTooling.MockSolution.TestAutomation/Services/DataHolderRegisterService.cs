@@ -4,6 +4,7 @@ using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extension
 using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
 using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Serilog;
 
@@ -28,27 +29,27 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
         /// </summary>
         public string CreateRegistrationRequest(
             string ssa,
-            string tokenEndpointAuthSigningAlg = "PS256",
+            string tokenEndpointAuthSigningAlg = SecurityAlgorithms.RsaSsaPssSha256,
             string[]? redirectUris = null,
             string jwtCertificateFilename = Constants.Certificates.JwtCertificateFilename,
             string jwtCertificatePassword = Constants.Certificates.JwtCertificatePassword,
             string applicationType = "web",
-            string requestObjectSigningAlg = "PS256",
+            string requestObjectSigningAlg = SecurityAlgorithms.RsaSsaPssSha256,
             string responseType = "code id_token",
             string[]? grantTypes = null,
-            string? authorizationSignedResponseAlg = null,
+            string? authorizationSignedResponseAlg = SecurityAlgorithms.RsaSsaPssSha256,
             string? authorizationEncryptedResponseAlg = null,
             string? authorizationEncryptedResponseEnc = null,
-            string? idTokenSignedResponseAlg = "PS256",
+            string? idTokenSignedResponseAlg = SecurityAlgorithms.RsaSsaPssSha256,
             string? idTokenEncryptedResponseAlg = "RSA-OAEP",
             string? idTokenEncryptedResponseEnc = "A256GCM"
             )
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(CreateRegistrationRequest), nameof(DataHolderRegisterService));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(CreateRegistrationRequest), nameof(DataHolderRegisterService));
 
-            string[] responseTypes = responseType.Contains(",") ? responseType.Split(",") : new string[] { responseType };
+            string[] responseTypes = responseType.Contains(',') ? responseType.Split(',') : [responseType];
 
-            grantTypes = grantTypes ?? new string[] { "client_credentials", "authorization_code", "refresh_token" };
+            grantTypes = grantTypes ?? ["client_credentials", "authorization_code", "refresh_token"];
 
             JwtSecurityToken decodedSSA;
             try
@@ -176,10 +177,10 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             string softwareProductId = Constants.SoftwareProducts.SoftwareProductId,
             string jwtCertificateFilename = Constants.Certificates.JwtCertificateFilename,
             string jwtCertificatePassword = Constants.Certificates.JwtCertificatePassword,
-            string responseType = "code id_token",
-            string authorizationSignedResponseAlg = "PS256")
+            string responseType = "code,code id_token",
+            string authorizationSignedResponseAlg = SecurityAlgorithms.RsaSsaPssSha256)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(RegisterSoftwareProduct), nameof(DataHolderRegisterService));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(RegisterSoftwareProduct), nameof(DataHolderRegisterService));
 
             // Get SSA from Register
             var ssa = await _registerSSAService.GetSSA(brandId, softwareProductId, _latestSSAVersion, jwtCertificateFilename, jwtCertificatePassword);

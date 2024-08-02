@@ -15,7 +15,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
 
             var response = await base.SendAsync(request, cancellationToken);
 
-            Log.Debug("{Function} Response: StatusCode={StatusCode} \nContent={Content}", nameof(HttpClient.SendAsync), response.StatusCode, await response.Content.ReadAsStringAsync());
+            Log.Debug("{Function} Response: StatusCode={StatusCode} \nContent={Content}", nameof(HttpClient.SendAsync), response.StatusCode, await response.Content.ReadAsStringAsync(cancellationToken));
 
             return response;
         }

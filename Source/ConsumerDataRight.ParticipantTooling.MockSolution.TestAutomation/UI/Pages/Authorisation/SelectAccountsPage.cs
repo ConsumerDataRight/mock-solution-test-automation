@@ -25,7 +25,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pa
 
         public async Task SelectAccount(string accountToSelect)
         {
-            if (accountToSelect.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(accountToSelect))
             {
                 throw new ArgumentOutOfRangeException(nameof(accountToSelect), "Parameter must contain a value.").Log();
             }
@@ -42,7 +42,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pa
         }
         public async Task SelectAccounts(string accountsToSelectCsv)
         {
-            if (accountsToSelectCsv.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(accountsToSelectCsv))
             {
                 throw new ArgumentOutOfRangeException(nameof(accountsToSelectCsv), "Parameter must contain a value.").Log();
             }
@@ -84,7 +84,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pa
             }
             catch (TimeoutException) { }
             {
-                Log.Error("A timeout exception was caught in {class}.{function}", nameof(SelectAccountsPage), nameof(NoAccountSelectedErrorExists));
+                Log.Error("A timeout exception was caught in {Class}.{Function}", nameof(SelectAccountsPage), nameof(NoAccountSelectedErrorExists));
                 return false;
             }
         }

@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Serilog;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions
 {
     public static class ExceptionExtensions
     {
         public static Exception Log(this Exception ex)
         {
-            Serilog.Log.Error(ex.Message);
+            Serilog.Log.Error(ex, ex.Message);
             return ex;
+        }
+
+        public static void LogAndThrow(this Exception ex)
+        {
+            Serilog.Log.Error(ex, ex.Message);
+            throw new Exception("An error occurred in. See inner exception for details.", ex);
         }
     }
 }

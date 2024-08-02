@@ -3,7 +3,6 @@ using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
 
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
 {
-    [Serializable]
     public class UnavailableBankingAccountException : CdrException
     {
         /// <summary>
@@ -18,9 +17,6 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
 
         public UnavailableBankingAccountException(string detail)
           : base(CdsError.UnavailableBankingAccount, detail, System.Net.HttpStatusCode.UnprocessableEntity, null)
-        { }
-
-        protected UnavailableBankingAccountException(SerializationInfo info, StreamingContext context) : base(info, context)
         { }
     }
 }

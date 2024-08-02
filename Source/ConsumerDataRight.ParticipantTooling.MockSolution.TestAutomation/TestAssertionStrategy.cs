@@ -37,7 +37,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
         /// </summary>
         public void ThrowIfAny(IDictionary<string, object> context)
         {
-            if (_failureMessages.Any())
+            if (_failureMessages.Count != 0)
             {
                 var builder = new StringBuilder();
                 builder.AppendJoin(Environment.NewLine, _failureMessages).AppendLine();
