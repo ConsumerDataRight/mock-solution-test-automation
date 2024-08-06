@@ -2,6 +2,7 @@
 
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("SonarAnalyzer", "CA1707:Remove the underscores from member name", Justification = "Renaming these now require change in other repos as well.")]
     public class TestAutomationOptions
     {
         public bool IS_AUTH_SERVER { get; set; } = false;

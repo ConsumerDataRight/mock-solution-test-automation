@@ -6,6 +6,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2024-08-06
+### Changed
+- Updated nuget package versions.
+- Migrated from .Net 6 to .Net 8
+- Changed Banking Get Accounts API to only support version 2
+
+
+## [1.1.0] - 2024-03-13
+
+### Added
+- Added support Authorisation Code Flow (ACF).
+- Added helper method to modify client claims.
+
+### Changed
+- Updated nuget package versions to avoid vulnerabilities.
+- Updated methods to use ACF as default instead of Hybrid Flow.
+- Updated Playwright Locators to use new Id's for the consent workflow UI's.
+
+
 ## [1.0.0] - 2023-11-23
 
 ### Added

@@ -29,6 +29,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
             public bool received = false;
             public HttpMethod? method;
             public string? body;
+            public string? queryString;
         }
         private CallbackRequest Request { get; init; }
 
@@ -37,7 +38,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
         /// </summary>
         public void Start()
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(Start), nameof(DataRecipientConsentCallback));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(Start), nameof(DataRecipientConsentCallback));
 
             _host = new WebHostBuilder()
                .ConfigureServices(s => { s.AddSingleton(typeof(CallbackRequest), Request); })
@@ -54,7 +55,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
         /// </summary>
         public async Task Stop()
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(Stop), nameof(DataRecipientConsentCallback));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(Stop), nameof(DataRecipientConsentCallback));
 
             if (_host != null)
             {
@@ -67,7 +68,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
         /// </summary>
         public async Task<CallbackRequest?> WaitForCallback(int timeoutSeconds = 30)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(WaitForCallback), nameof(DataRecipientConsentCallback));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(WaitForCallback), nameof(DataRecipientConsentCallback));
 
             var stopAt = DateTime.Now.AddSeconds(timeoutSeconds);
 
@@ -108,6 +109,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
                         var body = await new StreamReader(context.Request.Body).ReadToEndAsync();
                         _callbackRequest.method = HttpMethod.Get;
                         _callbackRequest.body = body;
+                        _callbackRequest.queryString = context.Request.QueryString.Value;
                         _callbackRequest.received = true;
                     });
 
@@ -116,6 +118,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
                         var body = await new StreamReader(context.Request.Body).ReadToEndAsync();
                         _callbackRequest.method = HttpMethod.Post;
                         _callbackRequest.body = body;
+                        _callbackRequest.queryString = context.Request.QueryString.Value;
                         _callbackRequest.received = true;
                     });
                 });

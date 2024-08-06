@@ -1,9 +1,7 @@
-﻿using System.Runtime.Serialization;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+﻿using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
 
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
 {
-    [Serializable]
     public class InvalidPageSizeException : CdrException
     {
         /// <summary>
@@ -18,9 +16,6 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
 
         public InvalidPageSizeException(string detail)
             : base(CdsError.InvalidPageSize, detail, System.Net.HttpStatusCode.BadRequest, null)
-        { }
-
-        protected InvalidPageSizeException(SerializationInfo info, StreamingContext context) : base(info, context)
         { }
     }
 }

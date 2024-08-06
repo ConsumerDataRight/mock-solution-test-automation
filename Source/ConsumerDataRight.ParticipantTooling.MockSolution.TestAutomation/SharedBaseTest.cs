@@ -34,7 +34,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
                 return;
             }
 
-            Log.Information($"-Logger has been reconfigured to also write to TestOutput.-");
+            Log.Information("-Logger has been reconfigured to also write to TestOutput.-");
         }
     }
 }

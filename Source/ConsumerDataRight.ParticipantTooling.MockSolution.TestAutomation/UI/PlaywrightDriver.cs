@@ -13,7 +13,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI
 
         public async Task<IBrowserContext> NewBrowserContext(string? mediaFilePrefix = null)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(NewBrowserContext), nameof(PlaywrightDriver));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(NewBrowserContext), nameof(PlaywrightDriver));
 
             // mediaFilePrefix is usually set to the name of a test case.
             // If media file prefix not provided, use a Guid.
@@ -54,7 +54,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI
 
         private async Task<IBrowser> GetBrowser()
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(GetBrowser), nameof(PlaywrightDriver));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(GetBrowser), nameof(PlaywrightDriver));
 
             if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER")?.ToUpper() == "TRUE")
             {
@@ -74,7 +74,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI
 
         public async Task DisposeAsync()
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(DisposeAsync), nameof(PlaywrightDriver));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(DisposeAsync), nameof(PlaywrightDriver));
 
             if (_browserContext != null)
             {

@@ -48,18 +48,17 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
              string codeChallengeMethod = Constants.AuthServer.FapiPhase2CodeChallengeMethod,
 
              string? requestUri = null,
-             ResponseMode? responseMode = ResponseMode.Fragment,
+             ResponseMode? responseMode = ResponseMode.Jwt,
              string certificateFilename = Constants.Certificates.CertificateFilename,
              string certificatePassword = Constants.Certificates.CertificatePassword,
              string jwtCertificateForClientAssertionFilename = Constants.Certificates.JwtCertificateFilename,
              string jwtCertificateForClientAssertionPassword = Constants.Certificates.JwtCertificatePassword,
              string jwtCertificateForRequestObjectFilename = Constants.Certificates.JwtCertificateFilename,
              string jwtCertificateForRequestObjectPassword = Constants.Certificates.JwtCertificatePassword,
-
-             ResponseType? responseType = ResponseType.CodeIdToken,
+             ResponseType? responseType = ResponseType.Code,
              string? state = null)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(SendRequest), nameof(DataHolderParService));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(SendRequest), nameof(DataHolderParService));
 
             if (string.IsNullOrWhiteSpace(redirectUri))
             {
@@ -92,7 +91,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 {
                     CertificateFilename = jwtCertificateForClientAssertionFilename,
                     CertificatePassword = jwtCertificateForClientAssertionPassword,
-                    Issuer = clientId ?? throw new NullReferenceException(nameof(clientId)),
+                    Issuer = clientId ?? throw new InvalidOperationException($"{nameof(clientId)} is null"),
                     Audience = aud ?? issuer
                 }.Generate()
             ));
@@ -102,7 +101,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 var iat = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds();
 
                 var requestObject = new Dictionary<string, object> {
-                    { "iss", clientId ?? throw new NullReferenceException(nameof(clientId))},
+                    { "iss", clientId ?? throw new InvalidOperationException($"{nameof(clientId)} is null")},
                     { "iat", iat },
                     { "jti", Guid.NewGuid().ToString().Replace("-", string.Empty) },
 
@@ -183,9 +182,10 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                    string? redirectUri = null,
                    int? sharingDuration = Constants.AuthServer.SharingDuration,
                    string? cdrArrangementId = null,
-                   ResponseMode responseMode = ResponseMode.Fragment)
+                   ResponseType responseType = ResponseType.Code,
+                   ResponseMode responseMode = ResponseMode.Jwt)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(GetRequestUri), nameof(DataHolderParService));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(GetRequestUri), nameof(DataHolderParService));
 
             if (clientId == null)
             {
@@ -207,6 +207,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 redirectUri: redirectUri,
                 sharingDuration: sharingDuration,
                 cdrArrangementId: cdrArrangementId,
+                responseType: responseType,
                 responseMode: responseMode);
 
             if (response.StatusCode != HttpStatusCode.OK && response.StatusCode != HttpStatusCode.Created)
@@ -216,7 +217,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
             var json = await JsonExtensions.DeserializeResponseAsync<Response?>(response);
 
-            var requestUri = json?.RequestURI ?? throw new NullReferenceException("requestUri");
+            var requestUri = json?.RequestURI ?? throw new InvalidOperationException("RequestUri is null");
 
             return requestUri;
         }

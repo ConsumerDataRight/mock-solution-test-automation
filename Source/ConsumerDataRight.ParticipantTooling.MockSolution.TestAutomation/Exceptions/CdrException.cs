@@ -1,11 +1,8 @@
-﻿using System;
-using System.Net;
-using System.Runtime.Serialization;
+﻿using System.Net;
 using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
 
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions
 {
-    [Serializable]
     public class CdrException : Exception
     {
         private readonly string _code;
@@ -30,15 +27,6 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
             _title = errorInfo.Title;
             _detail = detail;
             _statusCode = statusCode;
-        }
-
-        protected CdrException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
-
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            base.GetObjectData(info, context);
         }
 
         public string Code { get => _code; }

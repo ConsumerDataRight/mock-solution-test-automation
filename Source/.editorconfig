@@ -30,6 +30,9 @@ dotnet_diagnostic.SA1101.severity = none
 # CA5350: Do Not Use Weak Cryptographic Algorithms
 dotnet_diagnostic.CA5350.severity = none
 
+#Server certificates should be verified during SSL/TLS connections.
+dotnet_diagnostic.S4830.severity = none
+
 #### Core EditorConfig Options ####
 
 # Indentation and spacing

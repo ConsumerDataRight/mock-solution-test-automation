@@ -75,25 +75,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
         /// <param name="actualJson">The actual json</param>
         public static void AssertJson(string? expectedJson, string actualJson)
         {
-            AssertJson<object>(expectedJson, actualJson);
-
-            //if (AssertIsJsonNullOrEmpty(expectedJson, actualJson))
-            //{
-            //    return;
-            //}
-
-            //object? expectedObject = JsonConvert.DeserializeObject(expectedJson);
-            //expectedObject.Should().NotBeNull($"Error deserializing expected json - '{expectedJson}'");
-
-            //object? actualObject = JsonConvert.DeserializeObject(actualJson);
-            //actualObject.Should().NotBeNull($"Error deserializing actual json - '{actualJson}'");
-
-            //var expectedJsonNormalised = JsonConvert.SerializeObject(expectedObject);
-            //var actualJsonNormalised = JsonConvert.SerializeObject(actualObject);
-
-            //actualJson?.JsonCompare(expectedJson).Should().BeTrue(
-            //    $"\r\nExpected json:\r\n{expectedJsonNormalised}\r\nActual Json:\r\n{actualJsonNormalised}\r\n"
-            //);
+            AssertJson<object>(expectedJson, actualJson);            
         }
 
         public static void AssertJson<T>(string? expectedJson, string actualJson)
@@ -129,16 +111,6 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
 
             return false;
         }
-
-        //private static void SerializeAndCompareJson(string? expectedObject, string actualObject)
-        //{
-        //    var expectedJsonNormalised = JsonConvert.SerializeObject(expectedObject);
-        //    var actualJsonNormalised = JsonConvert.SerializeObject(actualObject);
-
-        //    actualJson?.JsonCompare(expectedJson).Should().BeTrue(
-        //        $"\r\nExpected json:\r\n{expectedJsonNormalised}\r\nActual Json:\r\n{actualJsonNormalised}\r\n"
-        //    );
-        //}
 
         /// <summary>
         /// Assert headers has a single header with the expected value.
@@ -214,6 +186,22 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
             {
                 receivedError.Description.Should().Be(expectedError.ErrorDescription);
                 receivedError.Code.Should().Be(expectedError.Error);
+            }
+        }
+        public static async Task AssertErrorAsync(HttpResponseMessage responseMessage, CdrException expectedError)
+        {
+            responseMessage.StatusCode.Should().Be(expectedError.StatusCode);
+
+            AssertHasContentTypeApplicationJson(responseMessage.Content);
+
+            var responseContent = await responseMessage.Content.ReadAsStringAsync();
+            var receivedError = JsonConvert.DeserializeObject<AuthError>(responseContent);
+
+            receivedError.Should().NotBeNull();
+            if (receivedError != null)
+            {
+                receivedError.Description.Should().Be(expectedError.Detail);
+                receivedError.Code.Should().Be(expectedError.Code);
             }
         }
     }

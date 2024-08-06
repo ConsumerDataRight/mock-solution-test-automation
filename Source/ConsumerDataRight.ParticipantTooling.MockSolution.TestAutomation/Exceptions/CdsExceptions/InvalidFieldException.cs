@@ -1,9 +1,7 @@
-﻿using System.Runtime.Serialization;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+﻿using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
 
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
 {
-    [Serializable]
     public class InvalidFieldException : CdrException
     {
         /// <summary>
@@ -18,9 +16,6 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
 
         public InvalidFieldException(string detail)
          : base(CdsError.InvalidField, detail, System.Net.HttpStatusCode.BadRequest, null)
-        { }
-
-        protected InvalidFieldException(SerializationInfo info, StreamingContext context) : base(info, context)
         { }
     }
 }

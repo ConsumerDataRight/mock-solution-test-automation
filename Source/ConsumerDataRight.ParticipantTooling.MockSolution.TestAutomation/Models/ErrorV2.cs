@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
 using Newtonsoft.Json;
 
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models
@@ -10,8 +11,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Model
             Code = code;
             Title = title;
             Detail = detail;
-            Meta = new object(); //TODO: This is a workaround. Meta should actually use the code below (matching with RAAP) but the PT APIs use this code, so until it is resolved we should match the test behaviour to the PT API. Bug 64152
-            //Meta = metaUrn.IsNullOrWhiteSpace() ? null : new ErrorMetaV2(metaUrn);
+            Meta = metaUrn.IsNullOrWhiteSpace() ? null : new ErrorMetaV2(metaUrn);
         }
 
         /// <summary>

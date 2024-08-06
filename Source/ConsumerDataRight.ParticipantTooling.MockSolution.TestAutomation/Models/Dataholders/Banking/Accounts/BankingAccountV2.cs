@@ -39,10 +39,9 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Model
         /// <summary>
         /// Value indicating the number of customers that have ownership of the account, according to the data holder's definition of account ownership.
         /// Does not indicate that all account owners are eligible consumers.
-        /// NOTE: Currently not used but included to match latest standards. Actually mandatory but as we haven't implemented it yet, marked as optional
         /// </summary>
         [JsonProperty("accountOwnership")] 
-        public bool? AccountOwnership { get; set; } 
+        public string AccountOwnership { get; set; } 
         /// <summary>
         /// A masked version of the account. Whether BSB/Account Number, Credit Card PAN or another number
         /// </summary>

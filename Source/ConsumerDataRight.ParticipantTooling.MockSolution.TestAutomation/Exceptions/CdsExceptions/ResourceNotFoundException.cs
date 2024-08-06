@@ -1,10 +1,8 @@
 ﻿using System.Net;
-using System.Runtime.Serialization;
 using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
 
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
 {
-    [Serializable]
     public class ResourceNotFoundException : CdrException
     {
         /// <summary>
@@ -23,9 +21,6 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
 
         public ResourceNotFoundException()
         : base(CdsError.ResourceNotFound, "The authorised consumer's consent is insufficient to execute the resource", HttpStatusCode.NotFound, null)
-        { }
-
-        protected ResourceNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
         { }
     }
 }

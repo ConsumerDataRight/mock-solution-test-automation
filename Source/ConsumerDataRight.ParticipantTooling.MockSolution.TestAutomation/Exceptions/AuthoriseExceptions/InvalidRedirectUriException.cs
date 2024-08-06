@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.AuthoriseExceptions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.AuthoriseExceptions
 {
-    [Serializable]
     public class InvalidRedirectUriException : AuthoriseException
     {
         /// <summary>
@@ -11,9 +8,6 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
         /// </summary>
         public InvalidRedirectUriException(string redirectUri)
           : base(string.Empty, System.Net.HttpStatusCode.BadRequest, "invalid_redirect_uri", Constants.ErrorMessages.Dcr.RegistrationRequestInvalidRedirectUri.Replace("{0}",redirectUri))
-        { }
-
-        protected InvalidRedirectUriException(SerializationInfo info, StreamingContext context) : base(info, context)
         { }
     }
 }

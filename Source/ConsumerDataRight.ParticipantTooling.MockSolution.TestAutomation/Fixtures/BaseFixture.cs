@@ -29,7 +29,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtu
 
         public Task InitializeAsync()
         {
-            Log.Information("Started {FunctionName} in {ClassName}.", nameof(InitializeAsync), nameof(BaseFixture));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(InitializeAsync), nameof(BaseFixture));
 
             // Patch Register
             Helpers.AuthServer.PatchRedirectUriForRegister(_options);
@@ -56,7 +56,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtu
 
         public async Task DisposeAsync()
         {
-            Log.Information("Started {FunctionName} in {ClassName}.", nameof(DisposeAsync), nameof(BaseFixture));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(DisposeAsync), nameof(BaseFixture));
 
             if (_jwksEndpoint != null)
                 await _jwksEndpoint.DisposeAsync();
@@ -69,7 +69,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtu
         /// </summary>
         private void Register_PatchScopes()
         {
-            Log.Information("Started {FunctionName} in {ClassName}.", nameof(Register_PatchScopes), nameof(BaseFixture));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(Register_PatchScopes), nameof(BaseFixture));
             using var connection = new SqlConnection(_options.REGISTER_CONNECTIONSTRING);
             connection.Open();
 
@@ -80,7 +80,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtu
 
         private void CdrAuthServer_SeedDatabase()
         {
-            Log.Information("Started {FunctionName} in {ClassName}.", nameof(CdrAuthServer_SeedDatabase), nameof(BaseFixture));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(CdrAuthServer_SeedDatabase), nameof(BaseFixture));
             using var connection = new SqlConnection(_options.AUTHSERVER_CONNECTIONSTRING);
 
             connection.Query("delete softwareproducts");

@@ -43,7 +43,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exten
 
             if (attr != null)
             {
-                return attr?.Value ?? throw new InvalidOperationException($"Unable to get {nameof(EnumMemberAttribute)} value for enum: {@enum}");
+                return attr.Value ?? throw new InvalidOperationException($"Unable to get {nameof(EnumMemberAttribute)} value for enum: {@enum}");
             }
             else
             {

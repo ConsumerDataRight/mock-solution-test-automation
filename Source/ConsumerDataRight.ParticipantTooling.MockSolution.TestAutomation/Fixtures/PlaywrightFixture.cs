@@ -9,7 +9,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtu
 
         virtual public Task InitializeAsync()
         {
-            Log.Information("Started {FunctionName} in {ClassName}.", nameof(InitializeAsync), nameof(PlaywrightFixture));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(InitializeAsync), nameof(PlaywrightFixture));
 
             // Only install Playwright if not running in container, since Dockerfile.e2e-tests already installed Playwright
             if (!RUNNING_IN_CONTAINER)
@@ -24,7 +24,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtu
 
         virtual public Task DisposeAsync()
         {
-            Log.Information("Started {FunctionName} in {ClassName}.", nameof(DisposeAsync), nameof(PlaywrightFixture));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(DisposeAsync), nameof(PlaywrightFixture));
 
             return Task.CompletedTask;
         }

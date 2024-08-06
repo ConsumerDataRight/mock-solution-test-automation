@@ -41,7 +41,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             string jwkCertificatePassword = Constants.Certificates.JwtCertificatePassword
             )
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(SendRequest), nameof(DataHolderTokenService));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(SendRequest), nameof(DataHolderTokenService));
 
             if (string.IsNullOrWhiteSpace(redirectUri))
             {
@@ -127,7 +127,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
             var content = new FormUrlEncodedContent(formFields);
 
-            Log.Information("Sending token request:\n {content}\n to {endpoint}.", content.ReadAsStringAsync().Result, URL);
+            Log.Information("Sending token request:\n {Content}\n to {Endpoint}.", content.ReadAsStringAsync().Result, URL);
 
             using var client = Helpers.Web.CreateHttpClient(
                 certificateFilename ?? throw new ArgumentNullException(nameof(certificateFilename)),
@@ -135,11 +135,11 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
             Helpers.AuthServer.AttachHeadersForStandAlone(URL, content.Headers, _options.DH_MTLS_GATEWAY_URL, _authServeroptions.XTLSCLIENTCERTTHUMBPRINT, _authServeroptions.STANDALONE);
 
-            var responseMessage = usePut == true ?
+            var responseMessage = usePut ?
                 await client.PutAsync(URL, content) :
                 await client.PostAsync(URL, content);
 
-            Log.Information("Response from endpoint:\n {content}", responseMessage.Content.ReadAsStringAsync().Result);
+            Log.Information("Response from endpoint:\n {Content}", responseMessage.Content.ReadAsStringAsync().Result);
 
             return responseMessage;
         }
@@ -149,7 +149,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
         /// </summary>
         public async Task<string?> GetAccessToken(string authCode)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(GetAccessToken), nameof(DataHolderTokenService));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(GetAccessToken), nameof(DataHolderTokenService));
 
             var responseMessage = await SendRequest(authCode);
             if (responseMessage.StatusCode != HttpStatusCode.OK)
@@ -174,7 +174,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             string? scope = null //added for auth server tests
             )
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(GetResponse), nameof(DataHolderTokenService));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(GetResponse), nameof(DataHolderTokenService));
 
             if (string.IsNullOrWhiteSpace(redirectUri))
             {
@@ -212,7 +212,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
         /// </summary>
         public async Task<TokenResponse?> GetResponseUsingRefreshToken(string? refreshToken, string? scope = null)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(GetResponseUsingRefreshToken), nameof(DataHolderTokenService));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(GetResponseUsingRefreshToken), nameof(DataHolderTokenService));
 
             _ = refreshToken ?? throw new ArgumentNullException(nameof(refreshToken));
 

@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions
 {
-    [Serializable]
     public class InvalidScopeException : AuthoriseException
     {
         /// <summary>
@@ -11,9 +8,6 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
         /// </summary>
         public InvalidScopeException()
           : base(string.Empty, System.Net.HttpStatusCode.BadRequest, "invalid_scope", "Additional scopes were requested in the refresh_token request") //TODO: Should a error gen code and add to constants. Bug 64146
-        { }
-
-        protected InvalidScopeException(SerializationInfo info, StreamingContext context) : base(info, context)
         { }
     }
 }

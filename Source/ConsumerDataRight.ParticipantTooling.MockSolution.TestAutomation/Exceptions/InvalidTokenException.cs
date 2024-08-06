@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions
 {
-    [Serializable]
     public class InvalidTokenException : CdrException
     {
         /// <summary>
@@ -11,9 +8,6 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
         /// </summary>
         public InvalidTokenException()
           : base("401", "Unauthorized", "invalid_token", System.Net.HttpStatusCode.Unauthorized, null)
-        { }
-
-        protected InvalidTokenException(SerializationInfo info, StreamingContext context) : base(info, context)
         { }
     }
 }

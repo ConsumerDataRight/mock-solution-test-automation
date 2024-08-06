@@ -37,7 +37,7 @@ resources:
  - repository: GitHubRepo
    type: github
    name: ConsumerDataRight/mock-solution-test-automation
-   endpoint: github.com_CDR-LukeH
+   endpoint: github.com_CDR-CI
    ref: refs/$(github-ref-prefix)$(release-number)
 
 # The build has 3 seperate tasks run under 1 step

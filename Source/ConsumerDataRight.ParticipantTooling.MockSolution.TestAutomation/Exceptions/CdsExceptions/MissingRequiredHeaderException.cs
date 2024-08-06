@@ -1,9 +1,7 @@
-﻿using System.Runtime.Serialization;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+﻿using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
 
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
 {
-    [Serializable]
     public class MissingRequiredHeaderException : CdrException
     {
         /// <summary>
@@ -18,9 +16,6 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
 
         public MissingRequiredHeaderException(string detail)
           : base(CdsError.MissingRequiredHeader, detail, System.Net.HttpStatusCode.BadRequest, null)
-        { }
-
-        protected MissingRequiredHeaderException(SerializationInfo info, StreamingContext context) : base(info, context)
         { }
     }
 }
