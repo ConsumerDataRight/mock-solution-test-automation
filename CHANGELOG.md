@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.0.0] - 2024-08-16
+## [2.0.0] - 2024-08-06
 ### Changed
 - Updated nuget package versions.
 - Migrated from .Net 6 to .Net 8
