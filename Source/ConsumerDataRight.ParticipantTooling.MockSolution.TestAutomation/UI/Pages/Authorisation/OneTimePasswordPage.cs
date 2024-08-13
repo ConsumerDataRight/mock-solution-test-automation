@@ -17,7 +17,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pa
         public OneTimePasswordPage(IPage page)
         {
             _page = page;
-            _txtOneTimePassword = _page.Locator("id=mui-2", true);
+            _txtOneTimePassword = _page.Locator("id=otp", true);
             _btnCancel = _page.Locator("text=Cancel", true);
             _btnContinue = _page.Locator("button:has-text(\"Continue\")", true);
             _divAlert = _page.Locator("//div[@role='alert']", true);
@@ -76,7 +76,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pa
             }
             catch (TimeoutException) { }
             {
-                Log.Error("A timeout exception was caught in {class}.{function}",nameof(OneTimePasswordPage),nameof(OtpErrorExists));
+                Log.Error("A timeout exception was caught in {Class}.{Function}",nameof(OneTimePasswordPage),nameof(OtpErrorExists));
                 return false;
             }
         }

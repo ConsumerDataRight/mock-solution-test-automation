@@ -11,7 +11,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Inter
         ApiService BuildCustomerResourceAPI(string? accessToken);
         ApiService BuildDataHolderDiscoveryStatusAPI();
         ApiService BuildDataHolderDiscoveryOutagesAPI();
-        ApiService BuildDataHolderBankingGetAccountsAPI(string? accessToken, string? xFapiAuthDate, string? xv = "1", string? xFapiInteractionId = null, string certFileName = Constants.Certificates.CertificateFilename, string certPassword = Constants.Certificates.CertificatePassword, string? url = null);
+        ApiService BuildDataHolderBankingGetAccountsAPI(string? accessToken, string? xFapiAuthDate, string? xv = "2", string? xFapiInteractionId = null, string certFileName = Constants.Certificates.CertificateFilename, string certPassword = Constants.Certificates.CertificatePassword, string? url = null);
         ApiService BuildDataHolderBankingGetTransactionsAPI(string? accessToken, string? xFapiAuthDate, string? encryptedAccountId = null, string? xv = "1", string? xFapiInteractionId = null, string certFileName = Constants.Certificates.CertificateFilename, string certPassword = Constants.Certificates.CertificatePassword, string? url = null);
         ApiService BuildDataHolderCommonGetCustomerAPI(string? accessToken, string? xFapiAuthDate, string? xv = "1", string certFileName = Constants.Certificates.CertificateFilename, string certPassword = Constants.Certificates.CertificatePassword);
         ApiService BuildDataholderRegisterAPI(string? accessToken, string? registrationRequest, HttpMethod? httpMethod, string clientId = "");

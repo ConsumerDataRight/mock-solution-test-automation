@@ -51,21 +51,21 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exten
 
         static public Int32 ExecuteScalarInt32(this SqlConnection connection, string sql)
         {
-            Log.Information("Calling {FunctionName} with SQL command: {sql}", nameof(ExecuteScalarInt32), sql);
+            Log.Information("Calling {FunctionName} with SQL command: {Sql}", nameof(ExecuteScalarInt32), sql);
             using var command = new SqlCommand(sql, connection);
             return command.ExecuteScalarInt32();
         }
 
         static public string ExecuteScalarString(this SqlConnection connection, string sql)
         {
-            Log.Information("Calling {FunctionName} with SQL command: {sql}", nameof(ExecuteScalarString), sql);
+            Log.Information("Calling {FunctionName} with SQL command: {Sql}", nameof(ExecuteScalarString), sql);
             using var command = new SqlCommand(sql, connection);
             return command.ExecuteScalarString();
         }
 
         static public void ExecuteNonQuery(this SqlConnection connection, string sql)
         {
-            Log.Information("Calling {FunctionName} with SQL command: {sql}", nameof(ExecuteNonQuery), sql);
+            Log.Information("Calling {FunctionName} with SQL command: {Sql}", nameof(ExecuteNonQuery), sql);
             using var command = new SqlCommand(sql, connection);
             command.ExecuteNonQuery();
         }

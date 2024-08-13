@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions
 {
-    [Serializable]
     public class InvalidKeyHolderException : AuthoriseException
     {
         /// <summary>
@@ -13,7 +10,5 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
           : base(string.Empty, System.Net.HttpStatusCode.Unauthorized, "invalid_token", Constants.ErrorMessages.Authorization.AuthorizationHolderOfKeyCheckFailed)
         { }
 
-        protected InvalidKeyHolderException(SerializationInfo info, StreamingContext context) : base(info, context)
-        { }
     }
 }

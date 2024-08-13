@@ -11,7 +11,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exten
     {
         public static IServiceCollection AddTestAutomationSettings(this IServiceCollection services, Action<TestAutomationOptions> configureTestAutomationOptions)
         {
-            Log.Information($"Configuring Test Automation settings.");
+            Log.Information("Configuring Test Automation settings.");
 
             services.Configure(configureTestAutomationOptions);
 
@@ -83,8 +83,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exten
             }
             catch (Exception ex)
             {
-                Log.Error(ex.Message);
-                throw;
+                ex.LogAndThrow();
             }
 
             return services;
@@ -122,7 +121,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exten
 
         public static IServiceCollection AddTestAutomationServices(this IServiceCollection services, IConfiguration configuration)
         {
-            Log.Information($"Registering Test Automation shared services.");
+            Log.Information("Registering Test Automation shared services.");
 
             if (configuration == null) 
             {

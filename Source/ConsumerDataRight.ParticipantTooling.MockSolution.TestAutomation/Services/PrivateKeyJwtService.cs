@@ -29,7 +29,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
         private string Generate(IEnumerable<Claim> claims, DateTime expires)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(Generate), nameof(PrivateKeyJwtService));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(Generate), nameof(PrivateKeyJwtService));
 
             var certificate = new X509Certificate2(CertificateFilename, CertificatePassword, X509KeyStorageFlags.Exportable);
 

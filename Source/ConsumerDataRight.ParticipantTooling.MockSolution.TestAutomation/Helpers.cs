@@ -85,7 +85,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
 
                 var jwtHeader = new Dictionary<string, object>()
             {
-                { JwtHeaderParameterNames.Alg, "PS256" },
+                { JwtHeaderParameterNames.Alg, SecurityAlgorithms.RsaSsaPssSha256 },
                 { JwtHeaderParameterNames.Typ, "JWT" },
                 { JwtHeaderParameterNames.Kid, securityKey.KeyId},
             };
@@ -110,7 +110,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
                 var signingCredentials = new X509SigningCredentials(cert, SecurityAlgorithms.RsaSsaPssSha256);
                 var encryptingCredentials = new X509EncryptingCredentials(cert, SecurityAlgorithms.RsaOaepKeyWrap, SecurityAlgorithms.RsaOAEP);
 
-                var rsaParams = signingCredentials?.Certificate?.GetRSAPublicKey()?.ExportParameters(false) ?? throw new Exception("Error getting RSA params").Log();
+                var rsaParams = signingCredentials.Certificate.GetRSAPublicKey()?.ExportParameters(false) ?? throw new Exception("Error getting RSA params").Log();
                 var e = Base64UrlEncoder.Encode(rsaParams.Exponent);
                 var n = Base64UrlEncoder.Encode(rsaParams.Modulus);
 
@@ -137,7 +137,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
 
                 return new Jwks()
                 {
-                    Keys = new Models.Jwk[] { jwkSign, jwkEnc }
+                    Keys = [jwkSign, jwkEnc]
                 };
             }
         }
@@ -154,7 +154,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
                         throw new ArgumentNullException(nameof(dhMtlsGatewayUrl)).Log();
                     }
 
-                    if (url.StartsWith(dhMtlsGatewayUrl) == true)
+                    if (url.StartsWith(dhMtlsGatewayUrl))
                     {
                         if (xtlsClientCertThumbprint.IsNullOrWhiteSpace())
                         {
@@ -173,7 +173,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
             /// <param name="onlyPersistedGrants">Only clear the persisted grants table</param>
             public static void PurgeAuthServerForDataholder(TestAutomationOptions options, bool onlyPersistedGrants = false)
             {
-                Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(PurgeAuthServerForDataholder), nameof(Helpers.AuthServer));
+                Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(PurgeAuthServerForDataholder), nameof(Helpers.AuthServer));
 
                 using var connection = new SqlConnection(options.AUTHSERVER_CONNECTIONSTRING);
 
@@ -206,8 +206,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex.Message);
-                    throw;
+                    ex.LogAndThrow();
                 }
             }
 
@@ -218,7 +217,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
             /// </summary>
             public static void PatchRedirectUriForRegister(TestAutomationOptions options, string softwareProductId = TestAutomation.Constants.SoftwareProducts.SoftwareProductId, string redirectURI = "")
             {
-                Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(PatchRedirectUriForRegister), nameof(Helpers.AuthServer));
+                Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(PatchRedirectUriForRegister), nameof(Helpers.AuthServer));
 
                 if (redirectURI.IsNullOrWhiteSpace())
                 {
@@ -244,8 +243,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex.Message);
-                    throw;
+                    ex.LogAndThrow();
                 }
 
             }
@@ -258,7 +256,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
             /// </summary>
             public static void PatchJwksUriForRegister(TestAutomationOptions options, string softwareProductId = TestAutomation.Constants.SoftwareProducts.SoftwareProductId, string jwksURI = "")
             {
-                Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(PatchJwksUriForRegister), nameof(Helpers.AuthServer));
+                Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(PatchJwksUriForRegister), nameof(Helpers.AuthServer));
 
                 if (jwksURI.IsNullOrWhiteSpace())
                 {
@@ -284,8 +282,30 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex.Message);
-                    throw;
+                    ex.LogAndThrow();
+                }
+            }
+
+            public static void UpdateAuthServerClientClaim(TestAutomationOptions options, string clientId, string claimType, string value)
+            {
+                Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(UpdateAuthServerClientClaim), nameof(Helpers.AuthServer));
+
+                try
+                {
+                    using var connection = new SqlConnection(options.AUTHSERVER_CONNECTIONSTRING);
+                    connection.Open();
+                    using var updateCommand = new SqlCommand(
+                        $"Update ClientClaims Set Value = '{value}' WHERE ClientId = '{clientId}' AND Type = '{claimType}'",
+                        connection);
+                    int updatedRowCount = updateCommand.ExecuteNonQuery();
+                    if (updatedRowCount == 0)
+                    {
+                        throw new InvalidOperationException($"Update AuthServer ClientClaim for client {clientId} failed.").Log();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ex.LogAndThrow();
                 }
             }
         }

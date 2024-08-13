@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.AuthoriseExceptions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.AuthoriseExceptions
 {
-    [Serializable]
     public class InvalidSoftwareStatementException : AuthoriseException
     {
         /// <summary>
@@ -11,9 +8,6 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
         /// </summary>
         public InvalidSoftwareStatementException()
           : base(string.Empty, System.Net.HttpStatusCode.BadRequest, "invalid_software_statement", Constants.ErrorMessages.Dcr.SsaValidationFailed)
-        { }
-
-        protected InvalidSoftwareStatementException(SerializationInfo info, StreamingContext context) : base(info, context)
         { }
     }
 }

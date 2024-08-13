@@ -26,7 +26,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exten
             var claims = jwt.Claims.Where(claim => claim.Type == claimType);
 
             // Claim not found and it's optional so just exit
-            if (optional && (claims == null || !claims.Any()))
+            if (optional &&  !claims.Any())
             {
                 return;
             }

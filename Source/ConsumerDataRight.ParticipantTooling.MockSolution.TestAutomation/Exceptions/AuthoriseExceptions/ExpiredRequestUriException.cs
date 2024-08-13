@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.AuthoriseExceptions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.AuthoriseExceptions
 {
-    [Serializable]
     public class ExpiredRequestUriException : AuthoriseException
     {
         /// <summary>
@@ -11,10 +8,6 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
         /// </summary>
         public ExpiredRequestUriException()
           : base(string.Empty, System.Net.HttpStatusCode.BadRequest, "invalid_request_uri", Constants.ErrorMessages.Authorization.ExpiredRequestUri)
-        {
-        }
-
-        protected ExpiredRequestUriException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

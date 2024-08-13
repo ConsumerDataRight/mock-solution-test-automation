@@ -353,5 +353,10 @@
                 public const string InvalidClient = "ERR-GEN-038: invalid_client";
             }
         }
+
+        public static class LogTemplates
+        {
+            public const string StartedFunctionInClass = "Started {FunctionName} in {ClassName}.";
+        }
     }
 }

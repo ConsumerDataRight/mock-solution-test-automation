@@ -1,8 +1,7 @@
-﻿using IdentityModel;
-using Serilog;
-using System.Runtime.Serialization;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
+using IdentityModel;
+using Serilog;
 
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions
 {
@@ -10,7 +9,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exten
     {
         static public void WriteStringToFile(string filename, string? str)
         {
-            Log.Information("Writing string value to filename: {filename}", filename);
+            Log.Information("Writing string value to filename: {Filename}", filename);
             File.WriteAllText(filename, str);
         }
 
@@ -24,11 +23,8 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exten
 
         public static string CreatePkceChallenge(this string codeVerifier)
         {
-            using (var sha256 = SHA256.Create())
-            {
-                var challengeBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(codeVerifier));
-                return Base64Url.Encode(challengeBytes);
-            }
+            var challengeBytes = SHA256.HashData(Encoding.UTF8.GetBytes(codeVerifier));
+            return Base64Url.Encode(challengeBytes);
         }
 
         public static bool IsNullOrWhiteSpace(this string? str)

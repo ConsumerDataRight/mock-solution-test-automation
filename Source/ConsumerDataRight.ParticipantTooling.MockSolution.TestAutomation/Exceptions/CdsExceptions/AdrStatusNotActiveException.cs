@@ -1,10 +1,8 @@
-﻿using System.Runtime.Serialization;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+﻿using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
 using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
 
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
 {
-    [Serializable]
     public class AdrStatusNotActiveException : CdrException
     {
         /// <summary>
@@ -29,7 +27,5 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
         : base(CdsError.ADRStatusIsNotActive, Constants.ErrorMessages.General.SoftwareProductStatusInactive.Replace("{0}", status.ToEnumMemberAttrValue()), System.Net.HttpStatusCode.Forbidden, null) //TODO: Should the message be Legal Entity Status instead of Software Product? Noted in Bug 63710
         { }
 
-        protected AdrStatusNotActiveException(SerializationInfo info, StreamingContext context) : base(info, context)
-        { }
     }
 }

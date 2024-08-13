@@ -27,16 +27,33 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             string certificateFilename = Constants.Certificates.CertificateFilename,
             string certificatePassword = Constants.Certificates.CertificatePassword,
             string jwtCertificateFilename = Constants.Certificates.JwtCertificateFilename,
-            string jwtCertificatePassword = Constants.Certificates.JwtCertificatePassword
-        )
+            string jwtCertificatePassword = Constants.Certificates.JwtCertificatePassword)
         {
-            if (clientId == null)
-            {
-                clientId = _options.LastRegisteredClientId;
-            }
+            clientId ??= _options.LastRegisteredClientId;
 
-            var URL = $"{_options.DH_MTLS_GATEWAY_URL}/connect/revocation";
+            var url = $"{_options.DH_MTLS_GATEWAY_URL}/connect/revocation";
+            var formFields = GenerateFormFields(clientId, clientAssertionType, clientAssertion, token, tokenTypeHint, jwtCertificateFilename, jwtCertificatePassword, url);
 
+            using var clientHandler = CreateHttpClientHandler(certificateFilename, certificatePassword);
+            using var client = new HttpClient(clientHandler);
+
+            var content = new FormUrlEncodedContent(formFields);
+            Helpers.AuthServer.AttachHeadersForStandAlone(url, content.Headers, _options.DH_MTLS_GATEWAY_URL, _authServerOptions?.XTLSCLIENTCERTTHUMBPRINT, _authServerOptions?.STANDALONE);
+
+            var responseMessage = await client.PostAsync(url, content);
+            return responseMessage;
+        }
+
+        private static List<KeyValuePair<string?, string?>> GenerateFormFields(
+            string? clientId,
+            string clientAssertionType,
+            string? clientAssertion,
+            string? token,
+            string? tokenTypeHint,
+            string jwtCertificateFilename,
+            string jwtCertificatePassword,
+            string url)
+        {
             var formFields = new List<KeyValuePair<string?, string?>>();
 
             if (clientId != null)
@@ -49,15 +66,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 formFields.Add(new KeyValuePair<string?, string?>("client_assertion_type", clientAssertionType));
             }
 
-            formFields.Add(new KeyValuePair<string?, string?>("client_assertion", clientAssertion ??
-                new PrivateKeyJwtService
-                {
-                    CertificateFilename = jwtCertificateFilename,
-                    CertificatePassword = jwtCertificatePassword,
-                    Issuer = clientId ?? throw new InvalidOperationException($"{nameof(clientId)} can not be null.").Log(),
-                    Audience = URL
-                }.Generate())
-            );
+            formFields.Add(new KeyValuePair<string?, string?>("client_assertion", clientAssertion ?? GenerateClientAssertion(jwtCertificateFilename, jwtCertificatePassword, clientId, url)));
 
             if (token != null)
             {
@@ -69,23 +78,31 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 formFields.Add(new KeyValuePair<string?, string?>("token_type_hint", tokenTypeHint));
             }
 
-            var content = new FormUrlEncodedContent(formFields);
+            return formFields;
+        }
 
-            using var clientHandler = new HttpClientHandler();
-            clientHandler.ServerCertificateCustomValidationCallback += (sender, cert, chain, sslPolicyErrors) => true; //sonarqube will raise this as a vulnerability as it is not away this is a test library only
+        private static string GenerateClientAssertion(string jwtCertificateFilename, string jwtCertificatePassword, string? clientId, string url)
+        {
+            return new PrivateKeyJwtService
+            {
+                CertificateFilename = jwtCertificateFilename,
+                CertificatePassword = jwtCertificatePassword,
+                Issuer = clientId ?? throw new InvalidOperationException($"{nameof(clientId)} can not be null.").Log(),
+                Audience = url
+            }.Generate();
+        }
+
+        private static HttpClientHandler CreateHttpClientHandler(string certificateFilename, string certificatePassword)
+        {
+            var clientHandler = new HttpClientHandler();
+            clientHandler.ServerCertificateCustomValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
 
             clientHandler.ClientCertificates.Add(new X509Certificate2(
                 certificateFilename ?? throw new ArgumentNullException(nameof(certificateFilename)),
                 certificatePassword,
                 X509KeyStorageFlags.Exportable));
 
-            using var client = new HttpClient(clientHandler);
-
-            Helpers.AuthServer.AttachHeadersForStandAlone(URL, content.Headers, _options.DH_MTLS_GATEWAY_URL, _authServerOptions?.XTLSCLIENTCERTTHUMBPRINT, _authServerOptions?.STANDALONE);
-
-            var responseMessage = await client.PostAsync(URL, content);
-
-            return responseMessage;
+            return clientHandler;
         }
     }
 }

@@ -1,3 +1,11 @@
+schedules:
+- cron: '0 1 * * 0'
+  displayName: 'Run at 1:00 AM every Sunday (UTC)'
+  always: true
+  branches:
+    include:
+    - develop
+
 trigger:
   - develop
   - main

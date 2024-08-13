@@ -16,7 +16,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pa
         {
             _page = page;
             _hedMockDataHolderHeading = _page.Locator("h6:has-text(\"Mock Data Holder\")", true);
-            _txtCustomerId = _page.Locator("id=mui-1", true);
+            _txtCustomerId = _page.Locator("id=customerId", true);
             _btnContinue = _page.Locator("button:has-text(\"Continue\")", true);
             _lblHelpForExampleUserNames = _page.Locator("//div[@role='alert']", true);
 
@@ -54,7 +54,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pa
             }
             catch (TimeoutException) { }
             {
-                Log.Error("A timeout exception was caught in {class}.{function}", nameof(AuthenticateLoginPage), nameof(CustomerIdErrorExists));
+                Log.Error("A timeout exception was caught in {Class}.{Function}", nameof(AuthenticateLoginPage), nameof(CustomerIdErrorExists));
                 return false;
             }
         }

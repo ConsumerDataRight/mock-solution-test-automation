@@ -29,7 +29,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             string jwtCertificatePassword = Constants.Certificates.JwtCertificatePassword,
             Industry? industry = null)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}.", nameof(GetSSA), nameof(RegisterSsaService));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(GetSSA), nameof(RegisterSsaService));
 
             if (industry == null)
             {

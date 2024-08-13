@@ -13,7 +13,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Model
         public int ExpiresIn { get; set; }
         [JsonProperty("token_type")]
         public string TokenType { get; set; }
-        [JsonProperty("Scope")]
+        [JsonProperty(nameof(Scope))]
         public string Scope { get; set; }
     }
 }

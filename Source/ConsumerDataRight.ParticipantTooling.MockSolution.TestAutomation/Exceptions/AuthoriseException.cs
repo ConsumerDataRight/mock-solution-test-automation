@@ -1,11 +1,8 @@
-﻿using System;
-using System.Net;
-using System.Runtime.Serialization;
+﻿using System.Net;
 using Newtonsoft.Json;
 
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions
 {
-    [Serializable]
     public class AuthoriseException : Exception
     {
         public HttpStatusCode StatusCode { get; }
@@ -30,15 +27,6 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
             StatusCode = statusCode;
             Error = error;
             ErrorDescription = errorDescription;
-        }
-
-        protected AuthoriseException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
-
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            base.GetObjectData(info, context);
-        }
+        }       
     }
 }

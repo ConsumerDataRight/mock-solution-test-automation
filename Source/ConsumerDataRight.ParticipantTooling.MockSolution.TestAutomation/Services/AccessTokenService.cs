@@ -40,7 +40,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
            string issuer, string audience,
            string scope, string grantType, string clientId, string clientAssertionType)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}", nameof(CreateAccessTokenRequest), nameof(AccessTokenService));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(CreateAccessTokenRequest), nameof(AccessTokenService));
 
             static string BuildContent(string scope, string grant_type, string client_id, string client_assertion_type, string client_assertion)
             {
@@ -100,7 +100,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
         /// </summary>
         public async Task<string?> GetAsync(string dhMtlsGatewayUrl, string xtlsClientCertThumbprint, bool isStandalone)
         {
-            Log.Information("Calling {FUNCTION} in {ClassName}", nameof(GetAsync), nameof(AccessTokenService));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(GetAsync), nameof(AccessTokenService));
            
             // Create HttpClient
             using var client = Helpers.Web.CreateHttpClient(CertificateFilename, CertificatePassword);
@@ -113,7 +113,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 Issuer, Audience,
                 Scope, GrantType, ClientId, ClientAssertionType);
 
-            Helpers.AuthServer.AttachHeadersForStandAlone(request.RequestUri?.AbsoluteUri ?? throw new NullReferenceException($"{nameof(request.RequestUri.AbsoluteUri)} is null").Log(), request.Headers, dhMtlsGatewayUrl, xtlsClientCertThumbprint, isStandalone);
+            Helpers.AuthServer.AttachHeadersForStandAlone(request.RequestUri?.AbsoluteUri ?? throw new InvalidOperationException($"{nameof(request.RequestUri.AbsoluteUri)} is null").Log(), request.Headers, dhMtlsGatewayUrl, xtlsClientCertThumbprint, isStandalone);
 
             // Request the access token
             var response = await client.SendAsync(request);

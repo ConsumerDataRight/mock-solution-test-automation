@@ -11,7 +11,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Attri
         public override void Before(MethodInfo methodUnderTest)
         {
             Log.Logger.Information("-----------------------------------------------------");
-            Log.Logger.Information("--Test #{count} - {TestClassName}.{TestName}", ++_count, methodUnderTest.DeclaringType?.Name, methodUnderTest.Name);
+            Log.Logger.Information("--Test #{Count} - {TestClassName}.{TestName}", ++_count, methodUnderTest.DeclaringType?.Name, methodUnderTest.Name);
         }
 
         public override void After(MethodInfo methodUnderTest)

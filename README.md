@@ -37,7 +37,7 @@ Documentation on how this project is used can be found in the test automation ex
 ## Technology Stack
 
 The following technologies have been used to build the Mock Solution Test Automation project:
-- The source code has been written in `C#` using the `.Net 6` framework.
+- The source code has been written in `C#` using the `.Net 8` framework.
 - `xUnit` is the framework used for writing and running tests.
 - `Microsoft Playwright` is the framework used for Web Testing.
 

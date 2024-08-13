@@ -8,8 +8,6 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Model
         public string? Alg { get; set; }
         [JsonProperty("e")]
         public string? E { get; set; }
-        //[JsonProperty("key_ops")]
-        // public string[]? key_ops { get; set; }
         [JsonProperty("kid")]
         public string? Kid { get; set; }
         [JsonProperty("kty")]

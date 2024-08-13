@@ -30,7 +30,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtu
 
         new public async Task InitializeAsync()
         {
-            Log.Information("Started {FunctionName} in {ClassName}.", nameof(InitializeAsync), nameof(RegisterSoftwareProductFixture));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(InitializeAsync), nameof(RegisterSoftwareProductFixture));
 
             // Any Access Tokens in cache will become invalid when the database is purged.
             _dataHolderAccessTokenCache.ClearCache();
@@ -46,7 +46,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtu
 
         new public async Task DisposeAsync()
         {
-            Log.Information("Started {FunctionName} in {ClassName}.", nameof(DisposeAsync), nameof(RegisterSoftwareProductFixture));
+            Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(DisposeAsync), nameof(RegisterSoftwareProductFixture));
 
             await base.DisposeAsync();
 

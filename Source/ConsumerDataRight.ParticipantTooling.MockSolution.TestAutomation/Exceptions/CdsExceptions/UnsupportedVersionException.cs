@@ -1,9 +1,7 @@
-﻿using System.Runtime.Serialization;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+﻿using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
 
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
 {
-    [Serializable]
     public class UnsupportedVersionException : CdrException
     {
         /// <summary>
@@ -21,10 +19,8 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
         { }
 
         public UnsupportedVersionException()
-        : base(CdsError.UnsupportedVersion, "Version requested is lower than the minimum version or greater than maximum version.", System.Net.HttpStatusCode.NotAcceptable, null)
+        : base(CdsError.UnsupportedVersion, "Requested version is lower than the minimum version or greater than maximum version.", System.Net.HttpStatusCode.NotAcceptable, null)
         { }
 
-        protected UnsupportedVersionException(SerializationInfo info, StreamingContext context) : base(info, context)
-        { }
     }
 }
