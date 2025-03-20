@@ -16,8 +16,9 @@
         }
 
         /// <summary>
-        /// Return datetime converted to Unix Epoch (number of seconds since 00:00:00 UTC on 1 Jan 1970)
+        /// Return datetime converted to Unix Epoch (number of seconds since 00:00:00 UTC on 1 Jan 1970).
         /// </summary>
+        /// <returns>string.</returns>
         public static int UnixEpoch(this DateTime datetime)
         {
             return Convert.ToInt32(datetime.Subtract(DateTime.UnixEpoch).TotalSeconds);

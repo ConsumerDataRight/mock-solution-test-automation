@@ -1,7 +1,7 @@
-﻿using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
 {
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+
     public class InvalidArrangementException : CdrException
     {
         /// <summary>
@@ -12,10 +12,12 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
         /// <param name="message"></param>
         public InvalidArrangementException(string detail, string message)
             : base(CdsError.InvalidConsentArrangement, detail, System.Net.HttpStatusCode.UnprocessableEntity, message)
-        { }
+        {
+        }
 
         public InvalidArrangementException(string detail)
           : base(CdsError.InvalidConsentArrangement, detail, System.Net.HttpStatusCode.UnprocessableEntity, null)
-        { }
+        {
+        }
     }
 }

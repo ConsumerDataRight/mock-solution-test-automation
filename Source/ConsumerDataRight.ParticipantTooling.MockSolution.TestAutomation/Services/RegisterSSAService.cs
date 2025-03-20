@@ -1,11 +1,11 @@
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
-using Microsoft.Extensions.Options;
-using Serilog;
-
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Services
 {
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
+    using Microsoft.Extensions.Options;
+    using Serilog;
+
     public class RegisterSsaService : IRegisterSsaService
     {
         private readonly TestAutomationOptions _options;
@@ -18,9 +18,11 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             _authServerOptions = authServerOptions.Value ?? throw new ArgumentNullException(nameof(authServerOptions));
             _apiServiceDirector = apiServiceDirector ?? throw new ArgumentNullException(nameof(apiServiceDirector));
         }
+
         /// <summary>
-        /// Get SSA from the Register
+        /// Get SSA from the Register.
         /// </summary>
+        /// <returns>Task representing the asynchronous operation.</returns>
         public async Task<string> GetSSA(
             string brandId,
             string softwareProductId,
@@ -36,12 +38,12 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 industry = _options.INDUSTRY switch
                 {
                     Industry.BANKING => Industry.BANKING,
-                    Industry.ENERGY => Industry.ALL, //Energy was using the ALL parameter
+                    Industry.ENERGY => Industry.ALL, // Energy was using the ALL parameter
                     _ => throw new ArgumentException($"{nameof(_options.INDUSTRY)}")
                 };
             }
 
-            // Get access token 
+            // Get access token
             var registerAccessToken = await new AccessTokenService(_options.DH_MTLS_AUTHSERVER_TOKEN_URL)
             {
                 URL = _options.REGISTER_MTLS_TOKEN_URL,
@@ -54,10 +56,10 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 ClientAssertionType = Constants.ClientAssertionType,
                 GrantType = "client_credentials",
                 Issuer = softwareProductId,
-                Audience = _options.REGISTER_MTLS_TOKEN_URL
+                Audience = _options.REGISTER_MTLS_TOKEN_URL,
             }.GetAsync(_options.DH_MTLS_GATEWAY_URL, _authServerOptions.XTLSCLIENTCERTTHUMBPRINT, _authServerOptions.STANDALONE);
 
-            // Get the SSA 
+            // Get the SSA
             var api = _apiServiceDirector.BuildRegisterSSAAPI(industry, brandId, softwareProductId, registerAccessToken, xv);
             var response = await api.SendAsync();
 

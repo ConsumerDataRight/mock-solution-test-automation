@@ -1,16 +1,16 @@
-﻿using System.Net.Http.Headers;
-using System.Text;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Options;
-using Serilog;
-using static ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Services.ApiService;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Services
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Services
 {
+    using System.Net.Http.Headers;
+    using System.Text;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
+    using Microsoft.AspNetCore.WebUtilities;
+    using Microsoft.Extensions.Options;
+    using Serilog;
+    using static ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Services.ApiService;
+
     public class ApiServiceDirector : IApiServiceDirector
     {
         private readonly TestAutomationOptions _options;
@@ -62,7 +62,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
             _builder = new ApiServiceBuilder();
 
-            var additionalUrl = clientId.IsNullOrWhiteSpace() ? "" : $"/{clientId}";
+            var additionalUrl = clientId.IsNullOrWhiteSpace() ? string.Empty : $"/{clientId}";
 
             _builder
                 .WithUrl($"{_options.DH_MTLS_GATEWAY_URL}/connect/register{additionalUrl}")
@@ -99,6 +99,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 .WithXtlsClientCertificateThumbprint(_authServerOptions.XTLSCLIENTCERTTHUMBPRINT)
                 .Build();
         }
+
         public ApiService BuildAuthServerOpenIdConfigurationAPI()
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(BuildAuthServerOpenIdConfigurationAPI), nameof(ApiServiceDirector));
@@ -113,6 +114,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 .WithXtlsClientCertificateThumbprint(_authServerOptions.XTLSCLIENTCERTTHUMBPRINT)
                 .Build();
         }
+
         public ApiService BuildCustomerResourceAPI(string? accessToken)
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(BuildCustomerResourceAPI), nameof(ApiServiceDirector));
@@ -188,6 +190,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                  .WithAccessToken(accessToken)
                  .Build();
         }
+
         public ApiService BuildDataHolderBankingGetAccountsAPI(string? accessToken, string? xFapiAuthDate, string? xv = "2", string? xFapiInteractionId = null, string certFileName = Constants.Certificates.CertificateFilename, string certPassword = Constants.Certificates.CertificatePassword, string? url = null)
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(BuildDataHolderBankingGetAccountsAPI), nameof(ApiServiceDirector));

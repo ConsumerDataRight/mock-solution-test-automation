@@ -1,9 +1,9 @@
-﻿using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
-using Microsoft.Playwright;
-using Serilog;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pages.Authorisation
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pages.Authorisation
 {
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
+    using Microsoft.Playwright;
+    using Serilog;
+
     public class AuthenticateLoginPage
     {
         private readonly IPage _page;
@@ -29,8 +29,8 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pa
         public async Task EnterCustomerId(string customerId)
         {
             await _txtCustomerId.WaitForAsync();
-            await Task.Delay(1000); //require for JS delayed defaulting of field. It can sometimes overwrite the entered value.
-            await _txtCustomerId.FillAsync("");
+            await Task.Delay(1000); // require for JS delayed defaulting of field. It can sometimes overwrite the entered value.
+            await _txtCustomerId.FillAsync(string.Empty);
             await _txtCustomerId.FillAsync(customerId);
         }
 
@@ -52,12 +52,11 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pa
 
                 return await element.IsVisibleAsync();
             }
-            catch (TimeoutException) { }
+            catch (TimeoutException)
             {
                 Log.Error("A timeout exception was caught in {Class}.{Function}", nameof(AuthenticateLoginPage), nameof(CustomerIdErrorExists));
                 return false;
             }
         }
-
     }
 }

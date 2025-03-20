@@ -1,7 +1,7 @@
-﻿using Serilog;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
 {
+    using Serilog;
+
     public class LoggingHandler : DelegatingHandler
     {
         public LoggingHandler(HttpMessageHandler innerHandler)

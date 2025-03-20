@@ -1,8 +1,8 @@
-﻿using System.Net;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
 {
+    using System.Net;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+
     public class ResourceNotFoundException : CdrException
     {
         /// <summary>
@@ -13,14 +13,17 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
         /// <param name="message"></param>
         public ResourceNotFoundException(string detail, string message)
             : base(CdsError.ResourceNotFound, detail, HttpStatusCode.NotFound, message)
-        { }
+        {
+        }
 
         public ResourceNotFoundException(string detail)
         : base(CdsError.ResourceNotFound, detail, HttpStatusCode.NotFound, null)
-        { }
+        {
+        }
 
         public ResourceNotFoundException()
         : base(CdsError.ResourceNotFound, "The authorised consumer's consent is insufficient to execute the resource", HttpStatusCode.NotFound, null)
-        { }
+        {
+        }
     }
 }

@@ -1,7 +1,7 @@
-﻿using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
 {
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+
     public class InvalidVersionException : CdrException
     {
         /// <summary>
@@ -12,14 +12,17 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
         /// <param name="message"></param>
         public InvalidVersionException(string detail, string message)
             : base(CdsError.InvalidVersion, detail, System.Net.HttpStatusCode.BadRequest, message)
-        { }
+        {
+        }
 
         public InvalidVersionException(string detail)
          : base(CdsError.InvalidVersion, detail, System.Net.HttpStatusCode.BadRequest, null)
-        { }
+        {
+        }
 
         public InvalidVersionException()
         : base(CdsError.InvalidVersion, "Version is not a positive Integer.", System.Net.HttpStatusCode.BadRequest, null)
-        { }
+        {
+        }
     }
 }

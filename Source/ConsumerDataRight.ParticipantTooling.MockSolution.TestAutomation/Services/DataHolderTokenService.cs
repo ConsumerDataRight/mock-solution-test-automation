@@ -1,15 +1,15 @@
-using System.Net;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Dataholders;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
-using Serilog;
-
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Services
 {
+    using System.Net;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Dataholders;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
+    using Microsoft.Extensions.Options;
+    using Microsoft.IdentityModel.Tokens;
+    using Newtonsoft.Json;
+    using Serilog;
+
     public partial class DataHolderTokenService : IDataHolderTokenService
     {
         private readonly TestAutomationOptions _options;
@@ -24,22 +24,21 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
         // Send token request, returning HttpResponseMessage
         public async Task<HttpResponseMessage> SendRequest(
         string? authCode = null,
-            bool usePut = false,
-            string grantType = "authorization_code",
-            string? clientId = null,
-            string? issuerClaim = null,
-            string clientAssertionType = Constants.ClientAssertionType,
-            bool useClientAssertion = true,
-            int? shareDuration = null,
-            string? refreshToken = null,
-            string? customClientAssertion = null,
-            string? scope = null,
-            string? redirectUri = null,
-            string certificateFilename = Constants.Certificates.CertificateFilename,
-            string certificatePassword = Constants.Certificates.CertificatePassword,
-            string jwkCertificateFilename = Constants.Certificates.JwtCertificateFilename,
-            string jwkCertificatePassword = Constants.Certificates.JwtCertificatePassword
-            )
+        bool usePut = false,
+        string grantType = "authorization_code",
+        string? clientId = null,
+        string? issuerClaim = null,
+        string clientAssertionType = Constants.ClientAssertionType,
+        bool useClientAssertion = true,
+        int? shareDuration = null,
+        string? refreshToken = null,
+        string? customClientAssertion = null,
+        string? scope = null,
+        string? redirectUri = null,
+        string certificateFilename = Constants.Certificates.CertificateFilename,
+        string certificatePassword = Constants.Certificates.CertificatePassword,
+        string jwkCertificateFilename = Constants.Certificates.JwtCertificateFilename,
+        string jwkCertificatePassword = Constants.Certificates.JwtCertificatePassword)
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(SendRequest), nameof(DataHolderTokenService));
 
@@ -89,20 +88,21 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             {
                 formFields.Add(new KeyValuePair<string?, string?>("client_assertion", customClientAssertion));
             }
-            else if (useClientAssertion) //only check if we haven't provided custom client assertion
+            else if (useClientAssertion) 
             {
+                // only check if we haven't provided custom client assertion
                 var clientAssertion = new PrivateKeyJwtService
                 {
                     CertificateFilename = jwkCertificateFilename,
                     CertificatePassword = jwkCertificatePassword,
 
                     // Allow for clientId to be deliberately omitted from the JWT
-                    Issuer = issuerClaim == Constants.Omit ? "" : issuerClaim ?? throw new InvalidOperationException($"{nameof(issuerClaim)} can not be empty unless intentionally omitted.").Log(),
+                    Issuer = issuerClaim == Constants.Omit ? string.Empty : issuerClaim ?? throw new InvalidOperationException($"{nameof(issuerClaim)} can not be empty unless intentionally omitted.").Log(),
 
                     // Don't check for issuer if we are deliberately omitting clientId
                     RequireIssuer = clientId != Constants.Omit,
 
-                    Audience = URL
+                    Audience = URL,
                 }.Generate();
 
                 formFields.Add(new KeyValuePair<string?, string?>("client_assertion", clientAssertion));
@@ -145,8 +145,9 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
         }
 
         /// <summary>
-        /// Use authCode to get access token
+        /// Use authCode to get access token.
         /// </summary>
+        /// <returns>Task representing the asynchronous operation.</returns>
         public async Task<string?> GetAccessToken(string authCode)
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(GetAccessToken), nameof(DataHolderTokenService));
@@ -162,8 +163,9 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
         }
 
         /// <summary>
-        /// Use authCode to get tokens. 
+        /// Use authCode to get tokens.
         /// </summary>
+        /// <returns>Task representing the asynchronous operation.</returns>
         public async Task<TokenResponse?> GetResponse(string authCode, int? shareDuration = null,
             string? clientId = null,
             string? redirectUri = null,
@@ -171,8 +173,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             string? certificatePassword = Constants.Certificates.CertificatePassword,
             string? jwkCertificateFilename = Constants.Certificates.JwtCertificateFilename,
             string? jwkCertificatePassword = Constants.Certificates.JwtCertificatePassword,
-            string? scope = null //added for auth server tests
-            )
+            string? scope = null) // added for auth server tests
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(GetResponse), nameof(DataHolderTokenService));
 
@@ -181,7 +182,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 redirectUri = _options.SOFTWAREPRODUCT_REDIRECT_URI_FOR_INTEGRATION_TESTS;
             }
 
-            if (clientId == null) 
+            if (clientId == null)
             {
                 clientId = _options.LastRegisteredClientId;
             }
@@ -194,8 +195,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 certificatePassword: certificatePassword,
                 jwkCertificateFilename: jwkCertificateFilename,
                 jwkCertificatePassword: jwkCertificatePassword,
-                scope: scope
-            );
+                scope: scope);
 
             if (responseMessage.StatusCode != HttpStatusCode.OK)
             {
@@ -208,8 +208,9 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
         }
 
         /// <summary>
-        /// Use refresh token to get tokens
+        /// Use refresh token to get tokens.
         /// </summary>
+        /// <returns>Task representing the asynchronous operation.</returns>
         public async Task<TokenResponse?> GetResponseUsingRefreshToken(string? refreshToken, string? scope = null)
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(GetResponseUsingRefreshToken), nameof(DataHolderTokenService));
@@ -219,8 +220,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             var tokenResponseMessage = await SendRequest(
                 grantType: "refresh_token",
                 refreshToken: refreshToken,
-                scope: scope
-            );
+                scope: scope);
 
             if (tokenResponseMessage.StatusCode != HttpStatusCode.OK)
             {

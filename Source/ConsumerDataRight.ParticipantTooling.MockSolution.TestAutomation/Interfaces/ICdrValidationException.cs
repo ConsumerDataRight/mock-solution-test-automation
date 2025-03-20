@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces
 {
+    using System.ComponentModel.DataAnnotations;
+
     public interface ICdrValidationException<T>
     {
         List<T> Items { get; set; }

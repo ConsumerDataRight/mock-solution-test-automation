@@ -7,29 +7,36 @@ using Serilog;
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.APIs
 {
     /// <summary>
-    /// Url for Authorise endpoint
+    /// Url for Authorise endpoint.
     /// </summary>
     public class AuthoriseUrl
     {
         public string ClientId { get; private set; } 
+
         public string RedirectURI { get; private set; }
+
         public string JwtCertificateFilename { get; private set; } = Constants.Certificates.JwtCertificateFilename;
+
         public string JwtCertificatePassword { get; private set; } = Constants.Certificates.JwtCertificatePassword;
+
         public string Scope { get; private set; }
+
         public string ResponseType { get; private set; }
+
         public string? Request { get; private set; } = null; // use this as the request, rather than build request
+
         public string? RequestUri { get; private set; } = null;
 
         public string Url { get; private set; }
 
         /// <summary>
-        /// Lifetime (in seconds) of the access token. It has to be less than 60 mins
+        /// Lifetime (in seconds) of the access token. It has to be less than 60 mins.
         /// </summary>
         public int TokenLifetime { get; private set; } = Constants.AuthServer.DefaultTokenLifetime;
 
         /// <summary>
         /// Lifetime (in seconds) of the CDR arrangement.
-        /// 7776000 = 90 days
+        /// 7776000 = 90 days.
         /// </summary>
         public int? SharingDuration { get; private set; } = Constants.AuthServer.SharingDuration;
 
@@ -49,36 +56,43 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.APIs
                 _authoriseUrl.ClientId = value;
                 return this;
             }
+
             public AuthoriseUrlBuilder WithRedirectURI(string value)
             {
                 _authoriseUrl.RedirectURI = value;
                 return this;
             }
+
             public AuthoriseUrlBuilder WithJWTCertificateFilename(string value)
             {
                 _authoriseUrl.JwtCertificateFilename = value;
                 return this;
             }
+
             public AuthoriseUrlBuilder WithJWTCertificatePassword(string value)
             {
                 _authoriseUrl.JwtCertificatePassword = value;
                 return this;
             }
+
             public AuthoriseUrlBuilder WithScope(string value)
             {
                 _authoriseUrl.Scope = value;
                 return this;
             }
+
             public AuthoriseUrlBuilder WithResponseType(string value)
             {
                 _authoriseUrl.ResponseType = value;
                 return this;
             }
+
             public AuthoriseUrlBuilder WithRequest(string value)
             {
                 _authoriseUrl.Request = value;
                 return this;
             }
+
             public AuthoriseUrlBuilder WithRequestUri(string? value)
             {
                 _authoriseUrl.RequestUri = value;
@@ -124,9 +138,9 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.APIs
             {
                 Log.Information("Filling missing defaults for public properties");
 
-                var _options = _authoriseUrl.TestAutomationOptions; //purely to shorten reference
+                var _options = _authoriseUrl.TestAutomationOptions; // purely to shorten reference
 
-                //Anything that doesn't have a value which should...will get it's default value set
+                // Anything that doesn't have a value which should...will get it's default value set
                 if (_authoriseUrl.Scope.IsNullOrWhiteSpace())
                 {
                     _authoriseUrl.Scope = _options.SCOPE;
@@ -161,15 +175,20 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.APIs
                     { "scope", _authoriseUrl.Scope },
                     { "state", "foo" },
                     { "nonce", "foo" },
-                    { "claims", new {
+                    {
+                        "claims", new
+                    {
                         sharing_duration = _authoriseUrl.SharingDuration.ToString(),
-                        id_token = new {
-                            acr = new {
+                        id_token = new
+                        {
+                            acr = new
+                            {
                                 essential = true,
                                 values = new string[] { "urn:cds.au:cdr:2" }
                             }
                         }
-                    }}
+                    }
+                    }
                 };
 
                 return Helpers.Jwt.CreateJWT(_authoriseUrl.JwtCertificateFilename, _authoriseUrl.JwtCertificatePassword, subject);

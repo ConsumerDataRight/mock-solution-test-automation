@@ -1,12 +1,12 @@
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
-using Microsoft.Extensions.Options;
-using Serilog;
-
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Services
 {
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
+    using Microsoft.Extensions.Options;
+    using Serilog;
+
     /// <summary>
     /// Get access token from DataHolder.
     /// Cache request (user/selectedaccounts/scope) and accesstoken.
@@ -23,6 +23,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
         private readonly TestAutomationAuthServerOptions _authServerOptions;
 
         public int Hits { get; private set; } = 0;
+
         public int Misses { get; private set; } = 0;
 
         public DataHolderAccessTokenCache(IOptions<TestAutomationOptions> options, IOptions<TestAutomationAuthServerOptions> authServerOptions, IDataHolderParService dataHolderParService, IDataHolderTokenService dataHolderTokenService, IApiServiceDirector apiServiceDirector)
@@ -34,12 +35,16 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             _authServerOptions = authServerOptions.Value ?? throw new ArgumentNullException(nameof(authServerOptions));
         }
 
-        class CacheItem
+        private class CacheItem
         {
             public string? UserId { get; init; }
+
             public string? SelectedAccounts { get; init; }
+
             public string? Scope { get; init; }
+
             public ResponseType ResponseType { get; init; }
+
             public ResponseMode ResponseMode { get; init; }
 
             public string? AccessToken { get; set; }
@@ -51,9 +56,9 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
             switch (tokenType)
             {
-                case TokenType.MaryMoss: //this was used by energy
+                case TokenType.MaryMoss: // this was used by energy
                 case TokenType.HeddaHare:
-                case TokenType.JaneWilson: //this was used by banking
+                case TokenType.JaneWilson: // this was used by banking
                 case TokenType.SteveKennedy:
                 case TokenType.DewayneSteve:
                 case TokenType.Business1:
@@ -69,7 +74,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 case TokenType.InvalidFoo:
                     return "foo";
                 case TokenType.InvalidEmpty:
-                    return "";
+                    return string.Empty;
                 case TokenType.InvalidOmit:
                     return null;
 
@@ -84,8 +89,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             string? scope = null,
             bool useCache = true,
             ResponseType responseType = ResponseType.Code,
-            ResponseMode responseMode = ResponseMode.Jwt
-            )
+            ResponseMode responseMode = ResponseMode.Jwt)
         {
             Log.Information("Calling {FUNCTION} in {ClassName} with Params: {P1}={V1},{P2}={V2},{P3}={V3},{P4}={V4}.", nameof(GetAccessToken), nameof(DataHolderAccessTokenCache), nameof(userId), userId, nameof(selectedAccounts), selectedAccounts, nameof(scope), scope, nameof(useCache), useCache);
 
@@ -114,6 +118,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
                 return cacheHit.AccessToken;
             }
+
             // Cache miss, so perform auth/consent flow to get accesstoken/refreshtoken
             else
             {
@@ -138,7 +143,8 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             }
         }
 
-        private async Task<(string accessToken, string refreshToken)> FromAuthConsentFlow(string userId,
+        private async Task<(string accessToken, string refreshToken)> FromAuthConsentFlow(
+            string userId,
             string selectedAccounts,
             string? scope = null,
             ResponseType responseType = ResponseType.Code,
@@ -162,7 +168,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             }
             else
             {
-                authService = await new DataHolderAuthoriseService.DataHolderAuthoriseServiceBuilder(_options,  _dataHolderParService, _apiServiceDirector)
+                authService = await new DataHolderAuthoriseService.DataHolderAuthoriseServiceBuilder(_options, _dataHolderParService, _apiServiceDirector)
                 .WithUserId(userId)
                 .WithScope(scope)
                 .WithSelectedAccountIds(selectedAccounts)
@@ -177,18 +183,22 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             var tokenResponse = await _dataHolderTokenService.GetResponse(authCode);
 
             if (tokenResponse?.AccessToken == null)
+            {
                 throw new InvalidOperationException($"{nameof(FromAuthConsentFlow)} - access token is null").Log();
+            }
 
             if (tokenResponse.RefreshToken == null)
+            {
                 throw new InvalidOperationException($"{nameof(FromAuthConsentFlow)} - refresh token is null").Log();
+            }
 
             return (tokenResponse.AccessToken, tokenResponse.RefreshToken);
         }
+
         public void ClearCache()
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(ClearCache), nameof(DataHolderAccessTokenCache));
             _cache.Clear();
         }
-
     }
 }

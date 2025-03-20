@@ -7,7 +7,8 @@
         /// <para>Status code: 400 (Bad Request).</para>
         /// </summary>
         public InvalidScopeException()
-          : base(string.Empty, System.Net.HttpStatusCode.BadRequest, "invalid_scope", "Additional scopes were requested in the refresh_token request") //TODO: Should a error gen code and add to constants. Bug 64146
-        { }
+          : base(string.Empty, System.Net.HttpStatusCode.BadRequest, "invalid_scope", "Additional scopes were requested in the refresh_token request") // TODO: Should a error gen code and add to constants. Bug 64146
+        {
+        }
     }
 }

@@ -1,9 +1,9 @@
-﻿using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
-using Microsoft.Playwright;
-using Serilog;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pages.Authorisation
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pages.Authorisation
 {
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
+    using Microsoft.Playwright;
+    using Serilog;
+
     public class OneTimePasswordPage
     {
         private readonly IPage _page;
@@ -23,8 +23,8 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pa
             _divAlert = _page.Locator("//div[@role='alert']", true);
             _headDataHolderheading = _page.Locator("//h6", true);
             _btnCloseAlert = _page.Locator("[role=\"alert\"]>>[title=\"Close\"]", true);
-
         }
+
         public async Task EnterOtp(string otp)
         {
             await _txtOneTimePassword.WaitForAsync();
@@ -70,16 +70,15 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pa
         {
             try
             {
-                var element = await _page.WaitForSelectorAsync($"//p[text()='{errorToCheckFor}']",true);
+                var element = await _page.WaitForSelectorAsync($"//p[text()='{errorToCheckFor}']", true);
 
                 return await element.IsVisibleAsync();
             }
-            catch (TimeoutException) { }
+            catch (TimeoutException)
             {
-                Log.Error("A timeout exception was caught in {Class}.{Function}",nameof(OneTimePasswordPage),nameof(OtpErrorExists));
+                Log.Error("A timeout exception was caught in {Class}.{Function}", nameof(OneTimePasswordPage), nameof(OtpErrorExists));
                 return false;
             }
         }
-
     }
 }

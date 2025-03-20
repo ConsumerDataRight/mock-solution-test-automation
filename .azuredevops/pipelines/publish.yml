@@ -1,34 +1,17 @@
-pool:
-  vmImage: 'windows-latest'
 
 parameters:
+- name: PublishPackage
+  displayName: 'Confirm Publish Package to nuget'
+  type: boolean
+  default: false
 - name: pushEnvironment
-  displayName: 'Push to which environment?'
+  displayName: 'Nuget Environment'
   type: string
   values:
-      - Test
-      - Production
-  default: Test
+  - dev
+  - prod
+  default: dev
 
-# The build configuration is defined, in this case we are building Release packages
-# Based on 'pushEnvironment' parameter, we set other variables and variable groups to use test vs prod settings
-variables:
-  - name: buildConfiguration
-    value: 'Release'
-  - name : apiKey
-    ${{ if eq(parameters.pushEnvironment, 'Production') }}:
-      value: $(nuget-mock-solution-test-automation-api-key)
-    ${{ if ne(parameters.pushEnvironment, 'Production') }}:
-      value: $(int-nugettest-mock-solution-test-automation-api-key)
-  - name : nugetOrgSource
-    ${{ if eq(parameters.pushEnvironment, 'Production') }}:
-      value: 'https://api.nuget.org/v3/index.json'
-    ${{ if ne(parameters.pushEnvironment, 'Production') }}:
-      value: 'https://apiint.nugettest.org/v3/index.json'
-  - ${{ if eq(parameters.pushEnvironment, 'Production') }}:
-      - group: nuget_package_deployment
-  - ${{ if ne(parameters.pushEnvironment, 'Production') }}:
-      - group: int_nugettest_package_deployment
 
 # The github-ref-prefix should be either 'tags/' (for a tagged release) or 'heads/' (for a branch). Release number is either the tag name or branch name
 # The standard release process would use a tagged release where the tag name is the version number (e.g 1.0.0) so prefix is default 'tags/' and release-number would be '1.0.0'
@@ -40,72 +23,100 @@ resources:
    endpoint: github.com_CDR-CI
    ref: refs/$(github-ref-prefix)$(release-number)
 
-# The build has 3 seperate tasks run under 1 step
-steps:
-- checkout: GitHubRepo
-  fetchDepth: 0
 
-# Build the project by running the dotnet command build, pointing to our csproj file
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet build'
-  inputs:
-    command: 'build'
-    versioningScheme: byBuildNumber
-    arguments: '--configuration $(buildConfiguration) /p:UsingGitHubSource=true'
-    projects: '$(System.DefaultWorkingDirectory)\Source\**\*.csproj'
+stages:
+- stage: ${{parameters.pushEnvironment}}
+  variables:
+  - group: nuget_package_deployment_${{parameters.pushEnvironment}} 
+  - group: nuget_package_deployment_certificate
+  - name: buildConfiguration
+    value: 'Release'
+  - name : nuget-server-url
+    ${{ if eq(parameters.pushEnvironment, 'prod') }}:
+      value: 'https://api.nuget.org/v3/index.json'
+    ${{ else }}:
+      value: 'https://apiint.nugettest.org/v3/index.json'
+      
 
-# Create the package by running the dotnet pack command again pointing to the csproj file
-# The nobuild means the project will not be compiled before running pack, because its already built in above step
-- task: DotNetCoreCLI@2
-  displayName: "dotnet pack"
-  inputs:
-    command: 'pack'
-    configuration: $(BuildConfiguration)
-    packagesToPack: '$(System.DefaultWorkingDirectory)\Source\**\*.csproj'
-    nobuild: true
-    versioningScheme: 'off'
+  pool:
+    vmImage: 'windows-latest'
+  jobs:
+  - job : deploy_${{parameters.pushEnvironment}}
+
+    # The build has 3 seperate tasks run under 1 step
+    steps:
+    - checkout: GitHubRepo
+      fetchDepth: 0
+
+    # Build the project by running the dotnet command build, pointing to our csproj file
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet build'
+      inputs:
+        command: 'build'
+        versioningScheme: byBuildNumber
+        arguments: '--configuration $(buildConfiguration) /p:UsingGitHubSource=true'
+        projects: '$(System.DefaultWorkingDirectory)\Source\**\*.csproj'
+
+    # Create the package by running the dotnet pack command again pointing to the csproj file
+    # The nobuild means the project will not be compiled before running pack, because its already built in above step
+    - task: DotNetCoreCLI@2
+      displayName: "dotnet pack"
+      inputs:
+        command: 'pack'
+        configuration: $(BuildConfiguration)
+        packagesToPack: '$(System.DefaultWorkingDirectory)\Source\**\*.csproj'
+        nobuild: true
+        versioningScheme: 'off'
+        
+    - task: PublishSymbols@2
+      displayName: Publish symbols path
+      continueOnError: True
+      inputs:
+        SearchPattern: '**\bin\**\*.pdb'
+        PublishSymbols: false
+        SymbolServerType: TeamServices
+
+    - task: DotNetCoreCLI@2
+      displayName: Install NuGetKeyVaultSignTool
+      inputs:
+        command: 'custom'
+        custom: 'tool'
+        arguments: 'install --tool-path . NuGetKeyVaultSignTool'
     
-- task: PublishSymbols@2
-  displayName: Publish symbols path
-  continueOnError: True
-  inputs:
-    SearchPattern: '**\bin\**\*.pdb'
-    PublishSymbols: false
-    SymbolServerType: TeamServices
+    # WARNING: This will not throw an error if it can't find the file and will close silently (false positive)
+    - task: PowerShell@2
+      displayName: Signing with NuGetKeyVaultSignTool
+      inputs:
+        targetType: 'inline'
+        script: |
+          .\NuGetKeyVaultSignTool sign $(Build.ArtifactStagingDirectory)\*.nupkg `
+            --file-digest "sha256" `
+            --timestamp-rfc3161 "http://timestamp.digicert.com" `
+            --timestamp-digest "sha256" `
+            --azure-key-vault-url $(code-signing-kv-url) `
+            --azure-key-vault-tenant-id $(code-signing-kv-tenant-id) `
+            --azure-key-vault-client-id $(sp-code-signing-prod-client-id) `
+            --azure-key-vault-client-secret $(sp-code-signing-prod-client-secret) `
+            --azure-key-vault-certificate  $(code-signing-cert-name)
 
-- task: DotNetCoreCLI@2
-  displayName: Install NuGetKeyVaultSignTool
-  inputs:
-   command: 'custom'
-   custom: 'tool'
-   arguments: 'install --tool-path . NuGetKeyVaultSignTool'
-    
-# WARNING: This will not throw an error if it can't find the file and will close silently (false positive)
-- task: PowerShell@2
-  displayName: Signing with NuGetKeyVaultSignTool
-  inputs:
-   targetType: 'inline'
-   script: |
-    .\NuGetKeyVaultSignTool sign $(Build.ArtifactStagingDirectory)\*.nupkg `
-     --file-digest "sha256" `
-     --timestamp-rfc3161 "http://timestamp.digicert.com" `
-     --timestamp-digest "sha256" `
-     --azure-key-vault-url $(code-signing-kv-url) `
-     --azure-key-vault-tenant-id $(code-signing-kv-tenant-id) `
-     --azure-key-vault-client-id $(sp-code-signing-prod-client-id) `
-     --azure-key-vault-client-secret $(sp-code-signing-prod-client-secret) `
-     --azure-key-vault-certificate $(code-signing-cert-name)
+    # NOTE: Avoiding verifying with NuGetKeyVaultSignTool as it is rather faulty. Will give false positive for a file that doesn't exist.
+    # Use dotnet nuget verify instead
+    - task: PowerShell@2
+      displayName: Verifying NuGetKeyVaultSign
+      inputs:
+        targetType: 'inline'
+        script: 'dotnet nuget verify $(Build.ArtifactStagingDirectory)\*.nupkg'
 
-# NOTE: Avoiding verifying with NuGetKeyVaultSignTool as it is rather faulty. Will give false positive for a file that doesn't exist.
-# Use dotnet nuget verify instead
-- task: PowerShell@2
-  displayName: Verifying NuGetKeyVaultSign
-  inputs:
-    targetType: 'inline'
-    script: 'dotnet nuget verify $(Build.ArtifactStagingDirectory)\*.nupkg'
+    - task: PowerShell@2
+      displayName: 'Publishing to $(nuget-server-url)'
+      condition: and(succeeded(), eq(${{parameters.PublishPackage}} , true))
+      inputs:
+        targetType: 'inline'
+        script: 'dotnet nuget push $(Build.ArtifactStagingDirectory)\*.nupkg --api-key $(nuget-server-api-key) -n --source $(nuget-server-url)'
 
-- task: PowerShell@2
-  displayName: Publishing signed package
-  inputs:
-    targetType: 'inline'
-    script: 'dotnet nuget push $(Build.ArtifactStagingDirectory)\*.nupkg --api-key $(apiKey) -n --source $(nugetOrgSource)'
+    - task: PublishPipelineArtifact@1
+      displayName: Publish Signed Package
+      condition: succeeded()
+      inputs:
+        path: $(Build.ArtifactStagingDirectory)
+        artifact: mock-test-automation-solution

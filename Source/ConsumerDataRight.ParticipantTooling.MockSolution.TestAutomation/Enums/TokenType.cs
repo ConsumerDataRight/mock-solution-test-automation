@@ -6,15 +6,25 @@
         /// Used for energy
         /// </summary>
         MaryMoss,
+
         /// <summary>
         /// Used for energy
         /// </summary>
-        HeddaHare,//used for energy
+        HeddaHare, // used for energy
+
         /// <summary>
         /// Used for banking
         /// </summary>
-        JaneWilson, 
+        JaneWilson,
 
-        SteveKennedy, DewayneSteve, Business1, Beverage, InvalidFoo, InvalidEmpty, InvalidOmit, KamillaSmith, Business2
+        SteveKennedy,
+        DewayneSteve,
+        Business1,
+        Beverage,
+        InvalidFoo,
+        InvalidEmpty,
+        InvalidOmit,
+        KamillaSmith,
+        Business2,
     }
 }

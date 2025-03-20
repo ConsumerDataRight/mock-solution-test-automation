@@ -8,7 +8,7 @@
         /// </summary>
         public InvalidKeyHolderException()
           : base(string.Empty, System.Net.HttpStatusCode.Unauthorized, "invalid_token", Constants.ErrorMessages.Authorization.AuthorizationHolderOfKeyCheckFailed)
-        { }
-
+        {
+        }
     }
 }

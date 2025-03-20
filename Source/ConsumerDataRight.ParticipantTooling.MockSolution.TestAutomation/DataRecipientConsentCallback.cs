@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Serilog;
-
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
 {
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
+    using Serilog;
+
     public class DataRecipientConsentCallback
     {
         public DataRecipientConsentCallback(string redirectUrl)
@@ -14,11 +14,12 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
 
             Request = new CallbackRequest
             {
-                PathAndQuery = new Uri(redirectUrl).PathAndQuery
+                PathAndQuery = new Uri(redirectUrl).PathAndQuery,
             };
         }
 
         public string RedirectUrl { get; init; }
+
         private string RedirectUrlLeftPart => new Uri(RedirectUrl).GetLeftPart(UriPartial.Authority);
 
         private IWebHost? _host;
@@ -26,15 +27,17 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
         public class CallbackRequest
         {
             public string? PathAndQuery { get; init; }
+
             public bool received = false;
             public HttpMethod? method;
             public string? body;
             public string? queryString;
         }
+
         private CallbackRequest Request { get; init; }
 
         /// <summary>
-        /// Start web host
+        /// Start web host.
         /// </summary>
         public void Start()
         {
@@ -51,8 +54,9 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
         }
 
         /// <summary>
-        /// Stop web host
+        /// Stop web host.
         /// </summary>
+        /// <returns>Task representing the asynchronous operation.</returns>
         public async Task Stop()
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(Stop), nameof(DataRecipientConsentCallback));
@@ -64,8 +68,9 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
         }
 
         /// <summary>
-        /// Wait until we get a callback or otherwise timeout
+        /// Wait until we get a callback or otherwise timeout.
         /// </summary>
+        /// <returns>Task representing the asynchronous operation.</returns>
         public async Task<CallbackRequest?> WaitForCallback(int timeoutSeconds = 30)
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(WaitForCallback), nameof(DataRecipientConsentCallback));

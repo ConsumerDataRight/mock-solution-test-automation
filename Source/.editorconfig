@@ -256,3 +256,123 @@ tab_width = 4
 indent_size = 4
 end_of_line = crlf
 dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
+
+[*.cs]
+# complete the task associated to this 'TODO'
+dotnet_diagnostic.S1135.severity = none
+
+# documentation missing for a parameter
+dotnet_diagnostic.SA1611.severity = none
+
+# Filename should match first type name
+dotnet_diagnostic.SA1649.severity = none
+
+# element parameter should have text
+dotnet_diagnostic.SA1614.severity = none
+
+# enumeration elements should be documented
+dotnet_diagnostic.SA1602.severity = none
+
+# partial elements should be documented
+dotnet_diagnostic.SA1601.severity = none
+
+# elements should be documented
+dotnet_diagnostic.SA1600.severity = none
+
+# file may only contain a single type
+dotnet_diagnostic.SA1402.severity = none
+
+# The public modifier should appear before static
+dotnet_diagnostic.SA1206.severity = none
+
+# static members should appear before non-static members
+dotnet_diagnostic.SA1204.severity = none
+
+# public members should come before private
+dotnet_diagnostic.SA1202.severity = none
+
+# a filed should not follow a property
+dotnet_diagnostic.SA1201.severity = none
+
+# code should not contain blank lines at end
+dotnet_diagnostic.SA1518.severity = none
+
+# closing brace should be followed by blank line
+dotnet_diagnostic.SA1513.severity = none
+
+# element should not be on a single line
+dotnet_diagnostic.SA1502.severity = none
+
+# use trailing comma in multi-line intializers
+dotnet_diagnostic.SA1413.severity = none
+
+# variable should begin with lower case letter
+dotnet_diagnostic.SA1312.severity = none
+
+# field should be private
+dotnet_diagnostic.SA1401.severity = none
+
+# element should declare access modifier
+dotnet_diagnostic.SA1400.severity = none
+
+# parameter should being with lower-case
+dotnet_diagnostic.SA1313.severity = none
+
+# field should begin with upper case
+dotnet_diagnostic.SA1307.severity = none
+
+# readonly fields should appear before non-readonly
+dotnet_diagnostic.SA1214.severity = none
+
+# constant fields should appear before non-constant fields
+dotnet_diagnostic.SA1203.severity = none
+
+# do not use regions
+dotnet_diagnostic.SA1124.severity = none
+
+# generic type constraints should be on their own line
+dotnet_diagnostic.SA1127.severity = none
+
+# use built-in type alias
+dotnet_diagnostic.SA1121.severity = none
+
+# parameters should all be placed on the same line
+dotnet_diagnostic.SA1117.severity = none
+
+# parameter spans multiple lines
+dotnet_diagnostic.SA1118.severity = none
+
+# parameter should begin on the line after the previous parameter
+dotnet_diagnostic.SA1115.severity = none
+
+# code should not contain trailing whitespace
+dotnet_diagnostic.SA1028.severity = none
+
+# closing square bracket should be followed by a space
+dotnet_diagnostic.SA1011.severity = none
+
+# keyword new should be followed by a space
+dotnet_diagnostic.SA1000.severity = none
+
+# opening square brackets should not be preceded by a space
+dotnet_diagnostic.SA1010.severity = none
+
+[DataRecipientConsentCallback*.cs]
+# remove the unused private method
+dotnet_diagnostic.S1144.severity = none
+
+[JwksEndpoint.cs]
+# remove the unused private method
+dotnet_diagnostic.S1144.severity = none
+
+[Test*.cs]
+# Missing xml comment for publicly visible type
+dotnet_diagnostic.CS1591.severity = none
+
+[RegisterSSAService.cs]
+# remove this useless conditional 
+dotnet_diagnostic.S3440.severity = none
+
+[DateTimeExtensions.cs]
+# use string.Empty for empty strings
+dotnet_diagnostic.SA1122.severity = none

@@ -8,35 +8,39 @@
         /// </summary>
         public InvalidGrantException(string detail)
           : base(string.Empty, System.Net.HttpStatusCode.BadRequest, "invalid_grant", detail)
-        { }
-
+        {
+        }
     }
 
     public class ExpiredAuthorizationCodeException : InvalidGrantException
     {
-        public ExpiredAuthorizationCodeException() : base(Constants.ErrorMessages.Token.AuthorizationCodeExpired)
-        { }
-
+        public ExpiredAuthorizationCodeException()
+            : base(Constants.ErrorMessages.Token.AuthorizationCodeExpired)
+        {
+        }
     }
 
     public class InvalidAuthorizationCodeException : InvalidGrantException
     {
-        public InvalidAuthorizationCodeException() : base(Constants.ErrorMessages.Token.InvalidAuthorizationCode)
-        { }
-
+        public InvalidAuthorizationCodeException()
+            : base(Constants.ErrorMessages.Token.InvalidAuthorizationCode)
+        {
+        }
     }
 
     public class MissingRefreshTokenException : InvalidGrantException
     {
-        public MissingRefreshTokenException() : base(Constants.ErrorMessages.Token.MissingRefreshToken)
-        { }
-
+        public MissingRefreshTokenException()
+            : base(Constants.ErrorMessages.Token.MissingRefreshToken)
+        {
+        }
     }
 
     public class InvalidRefreshTokenException : InvalidGrantException
     {
-        public InvalidRefreshTokenException() : base(Constants.ErrorMessages.Token.InvalidRefreshToken)
-        { }
-
+        public InvalidRefreshTokenException()
+            : base(Constants.ErrorMessages.Token.InvalidRefreshToken)
+        {
+        }
     }
 }

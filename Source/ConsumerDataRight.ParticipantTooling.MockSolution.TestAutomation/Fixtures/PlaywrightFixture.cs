@@ -1,8 +1,8 @@
-using Serilog;
-using Xunit;
-
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtures
 {
+    using Serilog;
+    using Xunit;
+
     public class PlaywrightFixture : IAsyncLifetime
     {
         static private bool RUNNING_IN_CONTAINER => Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER")?.ToUpper() == "TRUE";

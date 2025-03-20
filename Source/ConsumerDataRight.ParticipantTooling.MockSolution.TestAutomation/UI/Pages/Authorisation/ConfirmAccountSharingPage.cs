@@ -1,14 +1,13 @@
-﻿using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
-using Microsoft.Playwright;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pages.Authorisation
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pages.Authorisation
 {
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
+    using Microsoft.Playwright;
+
     public class ConfirmAccountSharingPage
     {
         private readonly IPage _page;
         private readonly ILocator _btnAuthorise;
         private readonly ILocator _btnDeny;
-
 
         public ConfirmAccountSharingPage(IPage page, bool waitForPageToLoad = true)
         {
@@ -26,6 +25,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pa
         {
             await _btnAuthorise.ClickAsync();
         }
+
         public async Task ClickDeny()
         {
             await _btnDeny.ClickAsync();
@@ -39,7 +39,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pa
         public async Task<string> GetClusterDetail(string clusterHeading)
         {
             var stopAt = DateTime.Now.AddSeconds(10);
-            string clusterDetail = "";
+            string clusterDetail = string.Empty;
 
             // Need a custom sync to work around issue where cluster details sometimes do not load in time.
             // Retry for up to 10 Seconds to get a non blank value for cluser details.
@@ -50,7 +50,6 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pa
             }
 
             return clusterDetail;
-
         }
 
         public async Task<int> GetClusterCount()
@@ -58,6 +57,5 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pa
             var allClusterHeadings = await _page.QuerySelectorAllAsync("//div[contains(@class,'MuiAccordionSummary')]/a");
             return allClusterHeadings.Count;
         }
-
     }
 }

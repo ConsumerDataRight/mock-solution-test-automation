@@ -1,8 +1,8 @@
-﻿using System.Runtime.Serialization;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
 {
+    using System.Runtime.Serialization;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+
     public class UnavailableBankingAccountException : CdrException
     {
         /// <summary>
@@ -13,10 +13,12 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
         /// <param name="message"></param>
         public UnavailableBankingAccountException(string detail, string message)
             : base(CdsError.UnavailableBankingAccount, detail, System.Net.HttpStatusCode.UnprocessableEntity, message)
-        { }
+        {
+        }
 
         public UnavailableBankingAccountException(string detail)
           : base(CdsError.UnavailableBankingAccount, detail, System.Net.HttpStatusCode.UnprocessableEntity, null)
-        { }
+        {
+        }
     }
 }

@@ -1,18 +1,22 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography.X509Certificates;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
-using Microsoft.IdentityModel.Tokens;
-using Serilog;
-
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Services
 {
+    using System.IdentityModel.Tokens.Jwt;
+    using System.Security.Claims;
+    using System.Security.Cryptography.X509Certificates;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
+    using Microsoft.IdentityModel.Tokens;
+    using Serilog;
+
     public class PrivateKeyJwtService : IPrivateKeyJwtService
     {
         public bool RequireIssuer { get; init; } = true;
+
         public string CertificateFilename { get; set; }
+
         public string CertificatePassword { get; set; }
+
         public string Issuer { get; set; }
+
         public string Audience { get; set; }
 
         public string Generate()
@@ -21,7 +25,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             {
                 new Claim("sub", Issuer),
                 new Claim("jti", Guid.NewGuid().ToString()),
-                new Claim("iat", DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer)
+                new Claim("iat", DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer),
             };
 
             return Generate(claims, DateTime.UtcNow.AddMinutes(10));
@@ -35,12 +39,9 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
             var x509SigningCredentials = new X509SigningCredentials(certificate, SecurityAlgorithms.RsaSsaPssSha256);
 
-            if (RequireIssuer)
+            if (RequireIssuer && string.IsNullOrEmpty(Issuer))
             {
-                if (string.IsNullOrEmpty(Issuer))
-                {
-                    throw new ArgumentException("issuer must be provided");
-                }
+                throw new ArgumentException("issuer must be provided");
             }
 
             if (string.IsNullOrEmpty(Audience))

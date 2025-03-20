@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
-
-namespace Register.Common.Exceptions
+﻿namespace Register.Common.Exceptions
 {
+    using System.ComponentModel.DataAnnotations;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
+
     public class CdrValidationException<T> : Exception, ICdrValidationException<T>
     {
         public CdrValidationException()

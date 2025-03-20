@@ -1,7 +1,7 @@
-﻿using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
 {
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+
     public class MissingRequiredFieldException : CdrException
     {
         /// <summary>
@@ -12,10 +12,12 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
         /// <param name="message"></param>
         public MissingRequiredFieldException(string detail, string message)
             : base(CdsError.MissingRequiredField, detail, System.Net.HttpStatusCode.BadRequest, message)
-        { }
+        {
+        }
 
         public MissingRequiredFieldException(string detail)
           : base(CdsError.MissingRequiredField, detail, System.Net.HttpStatusCode.BadRequest, null)
-        { }
+        {
+        }
     }
 }

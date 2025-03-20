@@ -1,14 +1,13 @@
-﻿using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
-using Dapper;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Options;
-using Serilog;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Services
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Services
 {
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
+    using Dapper;
+    using Microsoft.Data.SqlClient;
+    using Microsoft.Extensions.Options;
+    using Serilog;
 
     public class SqlQueryService : ISqlQueryService
     {
@@ -20,8 +19,9 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
         }
 
         /// <summary>
-        /// Get DCR ClientId for a SoftwareProductID
+        /// Get DCR ClientId for a SoftwareProductID.
         /// </summary>
+        /// <returns>string.</returns>
         public string GetClientId(string softwareProductId)
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(GetClientId), nameof(SqlQueryService));
@@ -33,7 +33,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 new
                 {
                     ClaimType = "SOFTWARE_ID",
-                    ClaimValue = softwareProductId.ToUpper()
+                    ClaimValue = softwareProductId.ToUpper(),
                 });
 
             if (string.IsNullOrEmpty(clientId))

@@ -1,23 +1,23 @@
-using System.Net.Http.Headers;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
-using Serilog;
-
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Services
 {
+    using System.Net.Http.Headers;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
+    using Serilog;
+
     /// <summary>
-    /// Call API
+    /// Call API.
     /// </summary>
     public class ApiService : IApiService
     {
         /// <summary>
-        /// Filename of certificate to use. 
+        /// Filename of certificate to use.
         /// If null then no certificate will be attached to the request.
         /// </summary>
         public string? CertificateFilename { get; private set; } = Constants.Certificates.CertificateFilename;
 
         /// <summary>
-        /// Password for certificate. 
+        /// Password for certificate.
         /// If null then no certificate password will be set.
         /// </summary>
         public string? CertificatePassword { get; private set; } = Constants.Certificates.CertificatePassword;
@@ -90,33 +90,35 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
         public IEnumerable<string>? Cookies { get; private set; }
 
         /// <summary>
-        /// Set authentication header explicity. Can't be used if AccessToken is set
+        /// Set authentication header explicity. Can't be used if AccessToken is set.
         /// </summary>
         public AuthenticationHeaderValue? AuthenticationHeaderValue { get; }
 
         /// <summary>
-        /// Running standalone CdrAuthServer (ie no MtlsGateway)
+        /// Running standalone CdrAuthServer (ie no MtlsGateway).
         /// </summary>
         public bool IsStandalone { get; private set; } = false;
 
         /// <summary>
-        /// Dh Mtls Gateway Url 
-        /// Only needed if isStandalone is true 
+        /// Dh Mtls Gateway Url
+        /// Only needed if isStandalone is true.
         /// </summary>
         public string? DhMtlsGatewayUrl { get; private set; }
 
         /// <summary>
         /// Xtls Client Certificate Thumbprint
-        /// Only needed if isStandalone is true 
+        /// Only needed if isStandalone is true.
         /// </summary>
         public string? XtlsClientCertificateThumbprint { get; private set; }
 
-        private ApiService() { } //restricts class instantiation to builder only
+        private ApiService()
+        {
+        } // restricts class instantiation to builder only
 
         /// <summary>
         /// Send a request to the API.
         /// </summary>
-        /// <returns>The API response</returns>
+        /// <returns>The API response.</returns>
         public async Task<HttpResponseMessage> SendAsync(bool allowAutoRedirect = true, string? xtlsThumbprint = null)
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(SendAsync), nameof(ApiService));
@@ -215,10 +217,11 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             return await client.SendAsync(request);
         }
 
-
         public class ApiServiceBuilder : IBuilder<ApiService>
         {
-            public ApiServiceBuilder() { }
+            public ApiServiceBuilder()
+            {
+            }
 
             private readonly ApiService _api = new ApiService();
 
@@ -227,26 +230,31 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 _api.URL = value;
                 return this;
             }
+
             public ApiServiceBuilder WithXV(string? value)
             {
                 _api.XV = value;
                 return this;
             }
+
             public ApiServiceBuilder WithXFapiAuthDate(string? value)
             {
                 _api.XFapiAuthDate = value;
                 return this;
             }
+
             public ApiServiceBuilder WithAccessToken(string? value)
             {
                 _api.AccessToken = value;
                 return this;
             }
+
             public ApiServiceBuilder WithXFapiInteractionId(string? value)
             {
                 _api.XFapiInteractionId = value;
                 return this;
             }
+
             public ApiServiceBuilder WithHttpMethod(HttpMethod? value)
             {
                 _api.HttpMethod = value;
@@ -264,6 +272,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 _api.ContentType = value;
                 return this;
             }
+
             public ApiServiceBuilder WithAccept(string? value)
             {
                 _api.Accept = value;
@@ -305,11 +314,13 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 _api.IsStandalone = value;
                 return this;
             }
+
             public ApiServiceBuilder WithDhMtlsGatewayUrl(string? value)
             {
                 _api.DhMtlsGatewayUrl = value;
                 return this;
             }
+
             public ApiServiceBuilder WithXtlsClientCertificateThumbprint(string? value)
             {
                 _api.XtlsClientCertificateThumbprint = value;

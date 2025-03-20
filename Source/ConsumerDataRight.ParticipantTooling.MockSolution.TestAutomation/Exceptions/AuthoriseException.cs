@@ -1,8 +1,8 @@
-﻿using System.Net;
-using Newtonsoft.Json;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions
 {
+    using System.Net;
+    using Newtonsoft.Json;
+
     public class AuthoriseException : Exception
     {
         public HttpStatusCode StatusCode { get; }
@@ -13,13 +13,19 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
         [JsonProperty("error_description")]
         public string ErrorDescription { get; }
 
-        public AuthoriseException() { }
+        public AuthoriseException()
+        {
+        }
 
         public AuthoriseException(string message)
-            : base(message) { }
+            : base(message)
+        {
+        }
 
         public AuthoriseException(string message, Exception inner)
-            : base(message, inner) { }
+            : base(message, inner)
+        {
+        }
 
         public AuthoriseException(string message, HttpStatusCode statusCode, string error, string errorDescription)
             : this(message)
@@ -27,6 +33,6 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
             StatusCode = statusCode;
             Error = error;
             ErrorDescription = errorDescription;
-        }       
+        }
     }
 }

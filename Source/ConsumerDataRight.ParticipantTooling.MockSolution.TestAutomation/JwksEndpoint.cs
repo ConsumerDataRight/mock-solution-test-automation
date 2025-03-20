@@ -1,16 +1,17 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Serilog;
-
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
 {
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
+    using Serilog;
+
     public partial class JwksEndpoint : IAsyncDisposable
     {
         /// <summary>
-        /// Emulate a JWKS endpoint on url returning a JWKS for the given certificate
+        /// Initializes a new instance of the <see cref="JwksEndpoint"/> class.
+        /// Emulate a JWKS endpoint on url returning a JWKS for the given certificate.
         /// </summary>
         public JwksEndpoint(string url, string certificateFilename, string certificatePassword)
         {
@@ -20,9 +21,13 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
         }
 
         public string Url { get; init; }
+
         private string Url_PathAndQuery => new Uri(Url).PathAndQuery;
+
         private int UrlPort => new Uri(Url).Port;
+
         public string CertificateFilename { get; init; }
+
         public string CertificatePassword { get; init; }
 
         private IWebHost? _host;
@@ -36,7 +41,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
                 {
                     opts.ListenAnyIP(UrlPort, opts => opts.UseHttps());  // This will use the default developer certificate.  Use "dotnet dev-certs https" to install if necessary
                 })
-               .UseStartup(_ => new JWKSCallback_Startup(this))
+               .UseStartup(_ => new JwksCallback_Startup(this))
                .Build();
 
             _host.RunAsync();
@@ -53,6 +58,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
         }
 
         bool _disposed;
+
         public async ValueTask DisposeAsync()
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(DisposeAsync), nameof(JwksEndpoint));
@@ -66,18 +72,18 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
             GC.SuppressFinalize(this);
         }
 
-        class JWKSCallback_Startup
+        class JwksCallback_Startup
         {
             private JwksEndpoint Endpoint { get; init; }
 
-            public JWKSCallback_Startup(JwksEndpoint endpoint)
+            public JwksCallback_Startup(JwksEndpoint endpoint)
             {
                 Endpoint = endpoint;
             }
 
             /// <summary>
             /// This is used by the JWKS endpoint for Startup
-            /// NOTE: You may see warnings about 0 references to this function, but it is used 'automatically' as part of the startup process
+            /// NOTE: You may see warnings about 0 references to this function, but it is used 'automatically' as part of the startup process.
             /// </summary>
             /// <param name="app"></param>
             public void Configure(IApplicationBuilder app)
@@ -97,7 +103,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
 
             /// <summary>
             /// This is used by the JWKS endpoint for Startup
-            /// NOTE: You may see warnings about 0 references to this function, but it is used 'automatically' as part of the startup process
+            /// NOTE: You may see warnings about 0 references to this function, but it is used 'automatically' as part of the startup process.
             /// </summary>
             /// <param name="services"></param>
             public static void ConfigureServices(IServiceCollection services)

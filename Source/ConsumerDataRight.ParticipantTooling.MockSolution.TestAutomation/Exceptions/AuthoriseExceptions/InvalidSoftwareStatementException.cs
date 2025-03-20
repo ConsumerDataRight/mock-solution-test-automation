@@ -8,6 +8,7 @@
         /// </summary>
         public InvalidSoftwareStatementException()
           : base(string.Empty, System.Net.HttpStatusCode.BadRequest, "invalid_software_statement", Constants.ErrorMessages.Dcr.SsaValidationFailed)
-        { }
+        {
+        }
     }
 }

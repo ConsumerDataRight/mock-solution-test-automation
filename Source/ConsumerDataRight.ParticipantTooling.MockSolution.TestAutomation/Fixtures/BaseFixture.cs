@@ -1,15 +1,15 @@
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
-using Dapper;
-using Dapper.Contrib.Extensions;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Serilog;
-using Xunit;
-
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtures
 {
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
+    using Dapper;
+    using Dapper.Contrib.Extensions;
+    using Microsoft.Data.SqlClient;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Options;
+    using Serilog;
+    using Xunit;
+
     /// <summary>
     /// Patches Register SoftwareProduct RedirectURI and JwksURI.
     /// Stands up JWKS endpoint.
@@ -25,7 +25,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtu
             _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public ServiceProvider ServiceProvider { get; private set; }
+        public ServiceProvider ServiceProvider { get; }
 
         public Task InitializeAsync()
         {
@@ -40,12 +40,13 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtu
             }
 
             // Stand-up JWKS endpoint
-            _jwksEndpoint = new JwksEndpoint(_options.SOFTWAREPRODUCT_JWKS_URI_FOR_INTEGRATION_TESTS,
+            _jwksEndpoint = new JwksEndpoint(
+                _options.SOFTWAREPRODUCT_JWKS_URI_FOR_INTEGRATION_TESTS,
                 Constants.Certificates.JwtCertificateFilename,
                 Constants.Certificates.JwtCertificatePassword);
             _jwksEndpoint.Start();
 
-            //The Auth Server testing seeds specific data
+            // The Auth Server testing seeds specific data
             if (_options.IS_AUTH_SERVER)
             {
                 CdrAuthServer_SeedDatabase();
@@ -59,12 +60,14 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtu
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(DisposeAsync), nameof(BaseFixture));
 
             if (_jwksEndpoint != null)
+            {
                 await _jwksEndpoint.DisposeAsync();
+            }
         }
 
         /// <summary>
         /// The seed data for the Register is using the loopback uri for jwksuri.
-        /// Since the integration tests stands up it's own data recipient jwks endpoint we need to 
+        /// Since the integration tests stands up it's own data recipient jwks endpoint we need to
         /// patch the jwks uri to match our endpoint.
         /// </summary>
         private void Register_PatchScopes()
@@ -101,7 +104,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtu
                 LegalEntityStatus = "ACTIVE",
                 BrandId = Constants.Brands.BrandId,
                 BrandName = "Mock Data Recipient Brand Name",
-                BrandStatus = "ACTIVE"
+                BrandStatus = "ACTIVE",
             });
 
             connection.Insert(new SoftwareProduct()
@@ -116,22 +119,32 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtu
                 LegalEntityStatus = "ACTIVE",
                 BrandId = Constants.Brands.AdditionalBrandId,
                 BrandName = "Finance X",
-                BrandStatus = "ACTIVE"
+                BrandStatus = "ACTIVE",
             });
         }
 
         private class SoftwareProduct
         {
             public string? SoftwareProductId { get; set; }
+
             public string? SoftwareProductName { get; set; }
+
             public string? SoftwareProductDescription { get; set; }
+
             public string? LogoUri { get; set; }
+
             public string? Status { get; set; }
+
             public string? LegalEntityId { get; set; }
+
             public string? LegalEntityName { get; set; }
+
             public string? LegalEntityStatus { get; set; }
+
             public string? BrandId { get; set; }
+
             public string? BrandName { get; set; }
+
             public string? BrandStatus { get; set; }
         }
     }
