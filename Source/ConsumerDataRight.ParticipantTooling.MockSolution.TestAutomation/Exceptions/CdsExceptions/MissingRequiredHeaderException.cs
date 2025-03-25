@@ -1,7 +1,7 @@
-﻿using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
 {
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+
     public class MissingRequiredHeaderException : CdrException
     {
         /// <summary>
@@ -12,10 +12,12 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
         /// <param name="message"></param>
         public MissingRequiredHeaderException(string detail, string message)
             : base(CdsError.MissingRequiredHeader, detail, System.Net.HttpStatusCode.BadRequest, message)
-        { }
+        {
+        }
 
         public MissingRequiredHeaderException(string detail)
           : base(CdsError.MissingRequiredHeader, detail, System.Net.HttpStatusCode.BadRequest, null)
-        { }
+        {
+        }
     }
 }

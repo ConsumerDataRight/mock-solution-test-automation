@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions.Execution;
-using Serilog;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+    using System.Text;
+    using FluentAssertions.Execution;
+    using Serilog;
+
     /// <summary>
-    /// A custom assertion strategy used for Participant Tooling assertion scopes which is a close copy of CollectingAssertionStratgy, but required due to the protection level of that class being internal
+    /// A custom assertion strategy used for Participant Tooling assertion scopes which is a close copy of CollectingAssertionStratgy, but required due to the protection level of that class being internal.
     /// </summary>
     public class TestAssertionStrategy : IAssertionStrategy
     {
@@ -24,6 +23,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
         /// <summary>
         /// Discards and returns the failure messages that happened up to now.
         /// </summary>
+        /// <returns>string.</returns>
         public IEnumerable<string> DiscardFailures()
         {
             var discardedFailures = _failureMessages.ToArray();
@@ -33,7 +33,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
 
         /// <summary>
         /// Will throw a combined exception for any failures have been collected.
-        /// Some additional logging has been added for better reporting of issues
+        /// Some additional logging has been added for better reporting of issues.
         /// </summary>
         public void ThrowIfAny(IDictionary<string, object> context)
         {

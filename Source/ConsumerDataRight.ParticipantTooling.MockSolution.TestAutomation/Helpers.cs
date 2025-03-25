@@ -1,18 +1,18 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Security.Cryptography.X509Certificates;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
-using Jose;
-using Microsoft.Data.SqlClient;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
-using Serilog;
-
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
 {
+    using System.IdentityModel.Tokens.Jwt;
+    using System.Net;
+    using System.Net.Http.Headers;
+    using System.Security.Cryptography.X509Certificates;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
+    using Jose;
+    using Microsoft.Data.SqlClient;
+    using Microsoft.IdentityModel.Tokens;
+    using Newtonsoft.Json;
+    using Serilog;
+
     public static class Helpers
     {
         public static class Web
@@ -23,16 +23,17 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
                 {
                     AllowAutoRedirect = allowAutoRedirect,
                 };
-                clientHandler.ServerCertificateCustomValidationCallback += (sender, cert, chain, sslPolicyErrors) => true; //sonarqube will raise this as a vulnerability as it is not away this is a test library only
+                clientHandler.ServerCertificateCustomValidationCallback += (sender, cert, chain, sslPolicyErrors) => true; // sonarqube will raise this as a vulnerability as it is not away this is a test library only
 
                 // Set cookie container
                 if (cookieContainer != null)
                 {
                     if (cookies != null)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(cookies),"Cookies and CookieContainer parameters cannot be provided at the same time.").Log();
+                        throw new ArgumentOutOfRangeException(nameof(cookies), "Cookies and CookieContainer parameters cannot be provided at the same time.").Log();
                     }
-                    clientHandler.UseDefaultCredentials = true; //used with the Cookie Container
+
+                    clientHandler.UseDefaultCredentials = true; // used with the Cookie Container
                     clientHandler.UseCookies = true;
                     clientHandler.CookieContainer = cookieContainer;
                 }
@@ -42,7 +43,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
                 {
                     if (request == null)
                     {
-                        throw new ArgumentNullException(nameof(request),"Request parameter cannot be null when Cookies parameter has been provided.").Log();
+                        throw new ArgumentNullException(nameof(request), "Request parameter cannot be null when Cookies parameter has been provided.").Log();
                     }
 
                     clientHandler.UseCookies = false;
@@ -54,14 +55,13 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
                 {
                     if (certPassword == null)
                     {
-                        throw new ArgumentNullException(nameof(certPassword),"Certificate password parameter cannot be null when Certificate filename parameter has been provided.").Log();
+                        throw new ArgumentNullException(nameof(certPassword), "Certificate password parameter cannot be null when Certificate filename parameter has been provided.").Log();
                     }
 
                     clientHandler.ClientCertificates.Add(new X509Certificate2(
                         certFilename,
                         certPassword,
-                        X509KeyStorageFlags.Exportable
-                    ));
+                        X509KeyStorageFlags.Exportable));
                 }
 
                 return new HttpClient(new LoggingHandler(clientHandler));
@@ -87,7 +87,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
             {
                 { JwtHeaderParameterNames.Alg, SecurityAlgorithms.RsaSsaPssSha256 },
                 { JwtHeaderParameterNames.Typ, "JWT" },
-                { JwtHeaderParameterNames.Kid, securityKey.KeyId},
+                { JwtHeaderParameterNames.Kid, securityKey.KeyId },
             };
 
                 var jwt = JWT.Encode(payload, cert.GetRSAPrivateKey(), JwsAlgorithm.PS256, jwtHeader);
@@ -99,13 +99,14 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
         public static class Jwk
         {
             /// <summary>
-            /// Build JWKS from certificate
+            /// Build JWKS from certificate.
             /// </summary>
+            /// <returns>Jwks.</returns>
             public static Jwks BuildJWKS(string certificateFilename, string certificatePassword)
             {
                 var cert = new X509Certificate2(certificateFilename, certificatePassword);
 
-                //Get credentials from certificate
+                // Get credentials from certificate
                 var securityKey = new X509SecurityKey(cert);
                 var signingCredentials = new X509SigningCredentials(cert, SecurityAlgorithms.RsaSsaPssSha256);
                 var encryptingCredentials = new X509EncryptingCredentials(cert, SecurityAlgorithms.RsaOaepKeyWrap, SecurityAlgorithms.RsaOAEP);
@@ -118,11 +119,12 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
                 {
                     Alg = signingCredentials.Algorithm,
                     Kid = signingCredentials.Kid,
-                    //  kid = signingCredentials.Key.KeyId,
+
+                    // kid = signingCredentials.Key.KeyId,
                     Kty = securityKey.PublicKey.KeyExchangeAlgorithm,
                     N = n,
                     E = e,
-                    Use = "sig"
+                    Use = "sig",
                 };
 
                 var jwkEnc = new Models.Jwk()
@@ -132,12 +134,12 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
                     Kty = securityKey.PublicKey.KeyExchangeAlgorithm,
                     N = n,
                     E = e,
-                    Use = "enc"
+                    Use = "enc",
                 };
 
                 return new Jwks()
                 {
-                    Keys = [jwkSign, jwkEnc]
+                    Keys = [jwkSign, jwkEnc],
                 };
             }
         }
@@ -167,10 +169,10 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
             }
 
             /// <summary>
-            /// Clear data from the Dataholder's AuthServer database
+            /// Clear data from the Dataholder's AuthServer database.
             /// </summary>
             /// <param name="options"></param>
-            /// <param name="onlyPersistedGrants">Only clear the persisted grants table</param>
+            /// <param name="onlyPersistedGrants">Only clear the persisted grants table.</param>
             public static void PurgeAuthServerForDataholder(TestAutomationOptions options, bool onlyPersistedGrants = false)
             {
                 Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(PurgeAuthServerForDataholder), nameof(Helpers.AuthServer));
@@ -212,7 +214,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
 
             /// <summary>
             /// The seed data for the Register is using the loopback uri for redirecturi.
-            /// Since the integration tests stands up it's own data recipient consent/callback endpoint we need to 
+            /// Since the integration tests stands up it's own data recipient consent/callback endpoint we need to
             /// patch the redirect uri to match our callback.
             /// </summary>
             public static void PatchRedirectUriForRegister(TestAutomationOptions options, string softwareProductId = TestAutomation.Constants.SoftwareProducts.SoftwareProductId, string redirectURI = "")
@@ -245,13 +247,11 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
                 {
                     ex.LogAndThrow();
                 }
-
             }
-
 
             /// <summary>
             /// The seed data for the Register is using the loopback uri for jwksuri.
-            /// Since the integration tests stands up it's own data recipient jwks endpoint we need to 
+            /// Since the integration tests stands up it's own data recipient jwks endpoint we need to
             /// patch the jwks uri to match our endpoint.
             /// </summary>
             public static void PatchJwksUriForRegister(TestAutomationOptions options, string softwareProductId = TestAutomation.Constants.SoftwareProducts.SoftwareProductId, string jwksURI = "")
@@ -263,8 +263,8 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
                     jwksURI = options.SOFTWAREPRODUCT_JWKS_URI_FOR_INTEGRATION_TESTS;
                 }
 
-                try 
-                { 
+                try
+                {
                     using var connection = new SqlConnection(options.REGISTER_CONNECTIONSTRING);
                     connection.Open();
 
@@ -310,5 +310,4 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
             }
         }
     }
-
 }

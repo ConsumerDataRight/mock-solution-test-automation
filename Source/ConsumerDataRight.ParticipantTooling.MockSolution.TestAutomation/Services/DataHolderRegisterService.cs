@@ -1,15 +1,16 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Net;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
-using Serilog;
-
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Services
 {
+    using System.IdentityModel.Tokens.Jwt;
+    using System.Net;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
+    using Microsoft.Extensions.Options;
+    using Microsoft.IdentityModel.Tokens;
+    using Newtonsoft.Json;
+    using Serilog;
+
     public class DataHolderRegisterService : IDataHolderRegisterService
     {
         private readonly TestAutomationOptions _options;
@@ -24,9 +25,11 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             _registerSSAService = registerSSAService ?? throw new ArgumentNullException(nameof(registerSSAService));
             _apiServiceDirector = apiServiceDirector ?? throw new ArgumentNullException(nameof(apiServiceDirector));
         }
+
         /// <summary>
-        /// Create registration request JWT for SSA
+        /// Create registration request JWT for SSA.
         /// </summary>
+        /// <returns>string.</returns>
         public string CreateRegistrationRequest(
             string ssa,
             string tokenEndpointAuthSigningAlg = SecurityAlgorithms.RsaSsaPssSha256,
@@ -35,19 +38,14 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             string jwtCertificatePassword = Constants.Certificates.JwtCertificatePassword,
             string applicationType = "web",
             string requestObjectSigningAlg = SecurityAlgorithms.RsaSsaPssSha256,
-            string responseType = "code id_token",
+            ResponseType responseType = ResponseType.Code,
             string[]? grantTypes = null,
             string? authorizationSignedResponseAlg = SecurityAlgorithms.RsaSsaPssSha256,
             string? authorizationEncryptedResponseAlg = null,
             string? authorizationEncryptedResponseEnc = null,
-            string? idTokenSignedResponseAlg = SecurityAlgorithms.RsaSsaPssSha256,
-            string? idTokenEncryptedResponseAlg = "RSA-OAEP",
-            string? idTokenEncryptedResponseEnc = "A256GCM"
-            )
+            string? idTokenSignedResponseAlg = SecurityAlgorithms.RsaSsaPssSha256)
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(CreateRegistrationRequest), nameof(DataHolderRegisterService));
-
-            string[] responseTypes = responseType.Contains(',') ? responseType.Split(',') : [responseType];
 
             grantTypes = grantTypes ?? ["client_credentials", "authorization_code", "refresh_token"];
 
@@ -75,22 +73,19 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                     { "aud", _options.REGISTRATION_AUDIENCE_URI },
 
                     // Get redirect_uris from SSA
-                    { "redirect_uris",
+                    {
+                        "redirect_uris",
                         redirectUris ??
-                        decodedSSA.Claims.Where(claim => claim.Type == "redirect_uris").Select(claim => claim.Value).ToArray() },
-
+                        decodedSSA.Claims.Where(claim => claim.Type == "redirect_uris").Select(claim => claim.Value).ToArray()
+                    },
                     { "token_endpoint_auth_signing_alg", tokenEndpointAuthSigningAlg },
                     { "token_endpoint_auth_method", "private_key_jwt" },
                     { "grant_types", grantTypes },
-                    { "response_types", responseTypes },
+                    { "response_types", responseType.ToEnumMemberAttrValue() },
 
-                    //{ "id_token_signed_response_alg", "PS256" }, //TODO: Optional?
-                    //{ "id_token_encrypted_response_alg", "RSA-OAEP" },  //TODO: Optional?
-                    //{ "id_token_encrypted_response_enc", "A256GCM" },  //TODO: Optional?
-                    //{ "application_type", applicationType }, // spec says optional
+                    // { "application_type", applicationType }, // spec says optional
                     { "software_statement", ssa },
-
-                    { "client_id",softwareId },
+                    { "client_id", softwareId },
                 };
 
             // Optional fields.
@@ -108,7 +103,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             {
                 if (authorizationSignedResponseAlg == Constants.Null)
                 {
-                    subject.Add("authorization_signed_response_alg", null);
+                    subject.Add("authorization_signed_response_alg", string.Empty);
                 }
                 else
                 {
@@ -120,6 +115,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             {
                 subject.Add("authorization_encrypted_response_alg", authorizationEncryptedResponseAlg);
             }
+
             if (authorizationEncryptedResponseEnc != null)
             {
                 subject.Add("authorization_encrypted_response_enc", authorizationEncryptedResponseEnc);
@@ -128,15 +124,6 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             if (idTokenSignedResponseAlg != null)
             {
                 subject.Add("id_token_signed_response_alg", idTokenSignedResponseAlg);
-            }
-
-            if (idTokenEncryptedResponseAlg != null)
-            {
-                subject.Add("id_token_encrypted_response_alg", idTokenEncryptedResponseAlg);
-            }
-            if (idTokenEncryptedResponseEnc != null)
-            {
-                subject.Add("id_token_encrypted_response_enc", idTokenEncryptedResponseEnc);
             }
 
             var jwt = Helpers.Jwt.CreateJWT(
@@ -148,8 +135,9 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
         }
 
         /// <summary>
-        /// Register software product using registration request
+        /// Register software product using registration request.
         /// </summary>
+        /// <returns>Task representing the asynchronous operation.</returns>
         public async Task<HttpResponseMessage> RegisterSoftwareProduct(string registrationRequest)
         {
             Log.Information("Calling {FUNCTION} in {ClassName} with Params: {P1}={V1}.", nameof(RegisterSoftwareProduct), nameof(DataHolderRegisterService), nameof(registrationRequest), registrationRequest);
@@ -161,7 +149,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 CertificateFilename = Constants.Certificates.JwtCertificateFilename,
                 CertificatePassword = Constants.Certificates.JwtCertificatePassword,
                 Issuer = Constants.SoftwareProducts.SoftwareProductId.ToLower(),
-                Audience = url
+                Audience = url,
             }.Generate();
 
             // Post the request
@@ -177,7 +165,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             string softwareProductId = Constants.SoftwareProducts.SoftwareProductId,
             string jwtCertificateFilename = Constants.Certificates.JwtCertificateFilename,
             string jwtCertificatePassword = Constants.Certificates.JwtCertificatePassword,
-            string responseType = "code,code id_token",
+            ResponseType responseType = ResponseType.Code,
             string authorizationSignedResponseAlg = SecurityAlgorithms.RsaSsaPssSha256)
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(RegisterSoftwareProduct), nameof(DataHolderRegisterService));
@@ -186,11 +174,14 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             var ssa = await _registerSSAService.GetSSA(brandId, softwareProductId, _latestSSAVersion, jwtCertificateFilename, jwtCertificatePassword);
 
             // Register software product with DataHolder
-            var registrationRequest = CreateRegistrationRequest(ssa,
+            var registrationRequest = CreateRegistrationRequest(
+                ssa,
                 jwtCertificateFilename: jwtCertificateFilename,
                 jwtCertificatePassword: jwtCertificatePassword,
                 responseType: responseType,
                 authorizationSignedResponseAlg: authorizationSignedResponseAlg);
+
+            Log.Information("Registration Request to be sent: {RegistrationRequest}", registrationRequest);
 
             var response = await RegisterSoftwareProduct(registrationRequest);
             if (response.StatusCode != HttpStatusCode.Created)
@@ -208,7 +199,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             }
 
             _options.LastRegisteredClientId = clientId;
-            return (ssa, registration, clientId);
+            return (ssa, registration, clientId ?? string.Empty);
         }
     }
 }

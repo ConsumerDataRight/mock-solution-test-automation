@@ -1,17 +1,17 @@
-﻿using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums
 {
+    using System.Runtime.Serialization;
+    using System.Text.Json.Serialization;
+
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum ResponseType
     {
-        [EnumMember(Value = "code id_token")]
-        CodeIdToken,
         [EnumMember(Value = "code")]
         Code,
 
-        //Nonsense values used for testing
+        // Invalid values used for testing
+        [EnumMember(Value = "code id_token")]
+        CodeIdToken,
         [EnumMember(Value = "Foo")]
         TestOnlyFoo,
         [EnumMember(Value = "token")]

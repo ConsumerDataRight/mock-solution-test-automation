@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Dataholders.Banking.Transactions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Dataholders.Banking.Transactions
 {
+    using Newtonsoft.Json;
+
     public class ResponseBankingTransactionListV2
     {
         [JsonProperty("data", Required = Required.Always)]

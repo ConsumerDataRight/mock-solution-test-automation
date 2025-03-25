@@ -1,11 +1,15 @@
-﻿using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums
 {
+    using System.Runtime.Serialization;
+    using System.Text.Json.Serialization;
+
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum ResponseMode
     {
+        [EnumMember(Value = "jwt")]
+        Jwt,
+
+        // Invalid values used for testing
         [EnumMember(Value = "form_post")]
         FormPost,
 
@@ -14,8 +18,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums
 
         [EnumMember(Value = "query")]
         Query,
-        [EnumMember(Value = "jwt")]
-        Jwt,
+
         [EnumMember(Value = "form_post.jwt")]
         FormPostJwt,
 
@@ -25,7 +28,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums
         [EnumMember(Value = "query.jwt")]
         QueryJwt,
 
-        [EnumMember(Value = "foo")] //Nonsense value used for testing
-        TestOnlyFoo
+        [EnumMember(Value = "foo")]
+        TestOnlyFoo,
     }
 }

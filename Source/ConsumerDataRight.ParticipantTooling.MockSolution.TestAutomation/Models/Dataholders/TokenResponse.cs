@@ -1,8 +1,7 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Dataholders
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Dataholders
 {
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Serialization;
 
     public class TokenResponse
     {
@@ -26,6 +25,5 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Model
 
         [JsonProperty("scope")]
         public string? Scope { get; set; }
-    };
-
+    }
 }

@@ -1,9 +1,9 @@
-﻿using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pages.Authorisation;
-using Microsoft.Playwright;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions
 {
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pages.Authorisation;
+    using Microsoft.Playwright;
+
     public static class PlaywrightExtensions
     {
         public static ILocator Locator(this IPage? page, string selector, bool throwErrorIfNotFound)

@@ -1,7 +1,7 @@
-﻿using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums
 {
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models;
+
     public enum CdsError
     {
         [CdrError("Expected Error Encountered", "urn:au-cds:error:cds-all:GeneralError/Expected")]
@@ -73,7 +73,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums
         [CdrError("Invalid Software Product", "urn:au-cds:error:cds-register:Field/InvalidSoftwareProduct")]
         InvalidSoftwareProduct,
 
-        [CdrError("Invalid Energy Account","urn:au-cds:error:cds-energy:Authorisation/InvalidEnergyAccount")]
+        [CdrError("Invalid Energy Account", "urn:au-cds:error:cds-energy:Authorisation/InvalidEnergyAccount")]
         InvalidEnergyAccount,
 
         [CdrError("Invalid Banking Account", "urn:au-cds:error:cds-banking:Authorisation/InvalidBankingAccount")]

@@ -1,0 +1,8 @@
+<Project>
+    <PropertyGroup>
+        <TargetFrameworkVersion>net8.0</TargetFrameworkVersion>
+		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+		<TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">true</TreatWarningsAsErrors>
+    </PropertyGroup>
+</Project>

@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Dataholders
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Dataholders
 {
+    using Newtonsoft.Json;
+
     public class MetaPaginated
     {
         /// <summary>
@@ -9,6 +9,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Model
         /// </summary>
         [JsonProperty("totalRecords", Required = Required.Always)]
         public long TotalRecords { get; set; }
+
         /// <summary>
         /// The total number of pages in the full set.
         /// </summary>

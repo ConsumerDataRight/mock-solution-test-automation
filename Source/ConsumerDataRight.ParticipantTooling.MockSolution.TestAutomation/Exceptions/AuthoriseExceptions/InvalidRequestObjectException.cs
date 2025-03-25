@@ -8,49 +8,63 @@
         /// </summary>
         public InvalidRequestObjectException(string detail)
           : base(string.Empty, System.Net.HttpStatusCode.BadRequest, "invalid_request_object", detail)
-        { }
-
+        {
+        }
     }
 
     public class TokenValidationRequestException : InvalidRequestObjectException
     {
-        public TokenValidationRequestException() : base(Constants.ErrorMessages.Jwt.JwtValidationErro.Replace("{0}","request"))
-        { }
+        public TokenValidationRequestException()
+            : base(Constants.ErrorMessages.Jwt.JwtValidationErro.Replace("{0}", "request"))
+        {
+        }
     }
 
     public class ExpiredRequestException : InvalidRequestObjectException
     {
-        public ExpiredRequestException() : base(Constants.ErrorMessages.Jwt.JwtExpired.Replace("{0}", "request"))
-        { }
+        public ExpiredRequestException()
+            : base(Constants.ErrorMessages.Jwt.JwtExpired.Replace("{0}", "request"))
+        {
+        }
     }
 
     public class InvalidExpClaimException : InvalidRequestObjectException
     {
-        public InvalidExpClaimException() : base(Constants.ErrorMessages.General.ExpiryGreaterThan60AfterNbf)
-        { }
+        public InvalidExpClaimException()
+            : base(Constants.ErrorMessages.General.ExpiryGreaterThan60AfterNbf)
+        {
+        }
     }
 
     public class InvalidResponseModeForResponseTypeException : InvalidRequestObjectException
     {
-        public InvalidResponseModeForResponseTypeException() : base(Constants.ErrorMessages.General.InvalidResponseModeForResponseType)
-        { }
+        public InvalidResponseModeForResponseTypeException()
+            : base(Constants.ErrorMessages.General.InvalidResponseModeForResponseType)
+        {
+        }
     }
 
     public class InvalidJwtException : InvalidRequestObjectException
     {
-        public InvalidJwtException() : base("Invalid JWT request")//TODO: Should a error gen code and add to constants. Bug 64146
-        { }
+        public InvalidJwtException()
+            : base("Invalid JWT request") // TODO: Should a error gen code and add to constants. Bug 64146
+        {
+        }
     }
 
     public class InvalidArrangementIdException : InvalidRequestObjectException
     {
-        public InvalidArrangementIdException() : base(Constants.ErrorMessages.General.InvalidCdrArrangementId)
-        { }
+        public InvalidArrangementIdException()
+            : base(Constants.ErrorMessages.General.InvalidCdrArrangementId)
+        {
+        }
     }
 
     public class MissingNbfClaimException : InvalidRequestObjectException
     {
-        public MissingNbfClaimException() : base(Constants.ErrorMessages.General.MissingNbf)
-        { }
+        public MissingNbfClaimException()
+            : base(Constants.ErrorMessages.General.MissingNbf)
+        {
+        }
     }
 }

@@ -1,9 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
-using Newtonsoft.Json;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models
 {
+    using System.ComponentModel.DataAnnotations;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
+    using Newtonsoft.Json;
+
     public class ErrorV2
     {
         public ErrorV2(string code, string title, string detail, string? metaUrn)
@@ -39,6 +39,6 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Model
         /// Optional additional data for specific error types.
         /// </summary>
         [JsonProperty("meta")]
-        public object Meta { get; set; }
+        public object? Meta { get; set; }
     }
 }

@@ -1,14 +1,14 @@
-using System.Net;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using Serilog;
-
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Services
 {
+    using System.Net;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
+    using Microsoft.Extensions.Options;
+    using Newtonsoft.Json;
+    using Serilog;
+
     public class DataHolderParService : IDataHolderParService
     {
         private readonly TestAutomationOptions _options;
@@ -27,7 +27,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
 
             [JsonProperty("expires_in")]
             public int? ExpiresIn { get; set; }
-        };
+        }
 
         public async Task<HttpResponseMessage> SendRequest(
              string? scope,
@@ -92,36 +92,39 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                     CertificateFilename = jwtCertificateForClientAssertionFilename,
                     CertificatePassword = jwtCertificateForClientAssertionPassword,
                     Issuer = clientId ?? throw new InvalidOperationException($"{nameof(clientId)} is null"),
-                    Audience = aud ?? issuer
-                }.Generate()
-            ));
+                    Audience = aud ?? issuer,
+                }.Generate()));
 
             if (addRequestObject)
             {
                 var iat = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds();
 
-                var requestObject = new Dictionary<string, object> {
-                    { "iss", clientId ?? throw new InvalidOperationException($"{nameof(clientId)} is null")},
+                var requestObject = new Dictionary<string, object>
+                {
+                    { "iss", clientId ?? throw new InvalidOperationException($"{nameof(clientId)} is null") },
                     { "iat", iat },
                     { "jti", Guid.NewGuid().ToString().Replace("-", string.Empty) },
-
-                    { "response_mode",  responseMode?.ToEnumMemberAttrValue()},
+                    { "response_mode",  responseMode?.ToEnumMemberAttrValue() },
                     { "aud", aud ?? _options.DH_TLS_AUTHSERVER_BASE_URL },
                     { "client_id", clientId },
                     { "redirect_uri", redirectUri },
                     { "state", state ?? Guid.NewGuid().ToString() },
                     { "nonce", Guid.NewGuid().ToString() },
-                    { "claims", new {
+                    {
+                        "claims", new
+                    {
                         sharing_duration = $"{sharingDuration}",
                         cdr_arrangement_id = cdrArrangementId,
-                        id_token = new {
-                            acr = new {
+                        id_token = new
+                        {
+                            acr = new
+                            {
                                 essential = true,
-                                values = new string[] { "urn:cds.au:cdr:2" }
-                                }
+                                values = new string[] { "urn:cds.au:cdr:2" },
                             },
-                        }
+                        },
                     }
+                    },
                 };
 
                 if (addNotBeforeClaim)
