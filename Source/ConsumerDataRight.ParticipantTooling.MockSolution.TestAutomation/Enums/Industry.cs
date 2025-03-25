@@ -1,8 +1,8 @@
-﻿using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums
 {
+    using System.Runtime.Serialization;
+    using System.Text.Json.Serialization;
+
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum Industry
     {

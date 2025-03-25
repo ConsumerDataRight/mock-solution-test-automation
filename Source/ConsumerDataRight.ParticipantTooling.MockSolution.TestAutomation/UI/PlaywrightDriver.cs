@@ -1,12 +1,14 @@
-﻿using Microsoft.Playwright;
-using Serilog;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI
 {
+    using Microsoft.Playwright;
+    using Serilog;
+
     public class PlaywrightDriver
     {
         public IBrowser Browser { get; set; } = null!;
+
         private IPlaywright PlaywrightInstance { get; set; } = null!;
+
         private IBrowserContext? _browserContext;
         private string? _mediaFilePrefix;
         private const string _mediaFilePath = "/testresults/media";
@@ -25,20 +27,20 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI
             {
                 _mediaFilePrefix = mediaFilePrefix;
             }
-            
+
             PlaywrightInstance = await Playwright.CreateAsync();
             Browser = await GetBrowser();
 
             var options = new BrowserNewContextOptions
             {
-                IgnoreHTTPSErrors = true,                
+                IgnoreHTTPSErrors = true,
             };
 
             options.ViewportSize = new ViewportSize
             {
                 Width = 2000,
-                Height = 1000
-            };            
+                Height = 1000,
+            };
 
             _browserContext = await Browser.NewContextAsync(options);
 
@@ -69,7 +71,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI
                 {
                     Headless = false,
                 });
-            }       
+            }
         }
 
         public async Task DisposeAsync()

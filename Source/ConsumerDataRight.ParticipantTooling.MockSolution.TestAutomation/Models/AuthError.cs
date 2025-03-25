@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models
 {
+    using Newtonsoft.Json;
+
     /// <summary>
-    /// This error is used for deserializing errors that we get during the authetication process, so that we can check the properties against exceptions instead of hard-coded strings
+    /// This error is used for deserializing errors that we get during the authetication process, so that we can check the properties against exceptions instead of hard-coded strings.
     /// </summary>
     public class AuthError
     {

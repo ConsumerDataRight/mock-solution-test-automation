@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models
 {
+    using Newtonsoft.Json;
+
     public class Jwks
     {
         [JsonProperty("keys")]

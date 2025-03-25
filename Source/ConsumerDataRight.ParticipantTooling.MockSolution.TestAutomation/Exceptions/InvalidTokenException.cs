@@ -8,6 +8,7 @@
         /// </summary>
         public InvalidTokenException()
           : base("401", "Unauthorized", "invalid_token", System.Net.HttpStatusCode.Unauthorized, null)
-        { }
+        {
+        }
     }
 }

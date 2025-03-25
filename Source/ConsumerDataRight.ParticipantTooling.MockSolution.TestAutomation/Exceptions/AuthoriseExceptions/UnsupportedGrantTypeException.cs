@@ -8,17 +8,20 @@
         /// </summary>
         public UnsupportedGrantTypeException(string detail)
           : base(string.Empty, System.Net.HttpStatusCode.BadRequest, "unsupported_grant_type", detail)
-        { }
+        {
+        }
 
         public UnsupportedGrantTypeException()
       : base(string.Empty, System.Net.HttpStatusCode.BadRequest, "unsupported_grant_type", Constants.ErrorMessages.General.UnsupportedGrantType)
-        { }
+        {
+        }
     }
 
     public class MissingGrantTypeException : UnsupportedGrantTypeException
     {
-        public MissingGrantTypeException() : base(Constants.ErrorMessages.General.GrantTypeNotProvided)
-        { }
+        public MissingGrantTypeException()
+            : base(Constants.ErrorMessages.General.GrantTypeNotProvided)
+        {
+        }
     }
-
 }

@@ -1,24 +1,24 @@
-﻿using System.Net.Http.Headers;
-using System.Security.Claims;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models;
-using FluentAssertions;
-using Newtonsoft.Json;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
 {
+    using System.Net.Http.Headers;
+    using System.Security.Claims;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models;
+    using FluentAssertions;
+    using Newtonsoft.Json;
+
     public static class Assertions
     {
-
         /// <summary>
-        /// Assert response content and expectedJson are equivalent
+        /// Assert response content and expectedJson are equivalent.
         /// </summary>
-        /// <param name="expectedJson">The expected json</param>
-        /// <param name="content">The response content</param>
+        /// <param name="expectedJson">The expected json.</param>
+        /// <param name="content">The response content.</param>
+        /// <returns>Task representing the asynchronous operation.</returns>
         public static async Task AssertHasContentJson(string? expectedJson, HttpContent? content)
         {
-            content.Should().NotBeNull(expectedJson ?? "");
+            content.Should().NotBeNull(expectedJson ?? string.Empty);
             if (content == null)
             {
                 return;
@@ -30,7 +30,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
 
         public static async Task AssertHasContentJson<T>(string? expectedJson, HttpContent? content)
         {
-            content.Should().NotBeNull(expectedJson ?? "");
+            content.Should().NotBeNull(expectedJson ?? string.Empty);
             if (content == null)
             {
                 return;
@@ -41,10 +41,11 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
         }
 
         /// <summary>
-        /// Assert response content is empty
+        /// Assert response content is empty.
         /// </summary>
-        /// <param name="content">The response content</param>
-        /// <param name="because">Reason the assertion is needed</param>
+        /// <param name="content">The response content.</param>
+        /// <param name="because">Reason the assertion is needed.</param>
+        /// <returns>Task representing the asynchronous operation.</returns>
         public static async Task AssertHasNoContent(HttpContent? content, string? because = null)
         {
             content.Should().NotBeNull();
@@ -58,10 +59,10 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
         }
 
         /// <summary>
-        /// Assert_HasNoContent because "No detail about response content in AC, check that API does not actually return any response content"
+        /// Assert_HasNoContent because "No detail about response content in AC, check that API does not actually return any response content".
         /// </summary>
         /// <param name="content"></param>
-        /// <returns></returns>
+        /// <returns>Task.</returns>
         public static async Task AssertHasNoContent2(HttpContent? content)
         {
             // Assert - No detail about response content in AC, check that API does not actually return any response content
@@ -69,13 +70,13 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
         }
 
         /// <summary>
-        /// Assert actual json is equivalent to expected json
+        /// Assert actual json is equivalent to expected json.
         /// </summary>
-        /// <param name="expectedJson">The expected json</param>
-        /// <param name="actualJson">The actual json</param>
+        /// <param name="expectedJson">The expected json.</param>
+        /// <param name="actualJson">The actual json.</param>
         public static void AssertJson(string? expectedJson, string actualJson)
         {
-            AssertJson<object>(expectedJson, actualJson);            
+            AssertJson<object>(expectedJson, actualJson);
         }
 
         public static void AssertJson<T>(string? expectedJson, string actualJson)
@@ -95,14 +96,13 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
             var actualJsonNormalised = JsonConvert.SerializeObject(actualObject);
 
             actualJson?.JsonCompare(expectedJson).Should().BeTrue(
-                $"\r\nExpected json:\r\n{expectedJsonNormalised}\r\nActual Json:\r\n{actualJsonNormalised}\r\n"
-            );
+                $"\r\nExpected json:\r\n{expectedJsonNormalised}\r\nActual Json:\r\n{actualJsonNormalised}\r\n");
         }
 
         private static bool AssertIsJsonNullOrEmpty(string? expectedJson, string actualJson)
         {
             expectedJson.Should().NotBeNullOrEmpty();
-            actualJson.Should().NotBeNullOrEmpty(expectedJson == null ? "" : $"expected {expectedJson}");
+            actualJson.Should().NotBeNullOrEmpty(expectedJson == null ? string.Empty : $"expected {expectedJson}");
 
             if (string.IsNullOrEmpty(expectedJson) || string.IsNullOrEmpty(actualJson))
             {
@@ -114,12 +114,12 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
 
         /// <summary>
         /// Assert headers has a single header with the expected value.
-        /// If expectedValue then just check for the existence of the header (and not it's value)
+        /// If expectedValue then just check for the existence of the header (and not it's value).
         /// </summary>
-        /// <param name="expectedValue">The expected header value</param>
-        /// <param name="headers">The headers to check</param>
-        /// <param name="name">Name of header to check</param>
-        /// <param name="startsWith">Whether the header just needs to start with the expected value (opposed to matching exactly)</param>
+        /// <param name="expectedValue">The expected header value.</param>
+        /// <param name="headers">The headers to check.</param>
+        /// <param name="name">Name of header to check.</param>
+        /// <param name="startsWith">Whether the header just needs to start with the expected value (opposed to matching exactly).</param>
         public static void AssertHasHeader(string? expectedValue, HttpHeaders headers, string name, bool startsWith = false)
         {
             headers.Should().NotBeNull();
@@ -149,7 +149,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
         }
 
         /// <summary>
-        /// Assert header has content type of ApplicationJson
+        /// Assert header has content type of ApplicationJson.
         /// </summary>
         /// <param name="content"></param>
         public static void AssertHasContentTypeApplicationJson(HttpContent content)
@@ -161,7 +161,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
         }
 
         /// <summary>
-        /// Assert claim exists
+        /// Assert claim exists.
         /// </summary>
         public static void AssertClaim(IEnumerable<Claim> claims, string claimType, string claimValue)
         {
@@ -188,6 +188,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
                 receivedError.Code.Should().Be(expectedError.Error);
             }
         }
+
         public static async Task AssertErrorAsync(HttpResponseMessage responseMessage, CdrException expectedError)
         {
             responseMessage.StatusCode.Should().Be(expectedError.StatusCode);

@@ -1,12 +1,12 @@
-﻿using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Services;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Serilog;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions
 {
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Services;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Serilog;
+
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddTestAutomationSettings(this IServiceCollection services, Action<TestAutomationOptions> configureTestAutomationOptions)
@@ -20,7 +20,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exten
 
             try
             {
-                //Doesn't check for Industry because it's an enum and defaults to banking if not supplied
+                // Doesn't check for Industry because it's an enum and defaults to banking if not supplied
                 if (options.SCOPE.IsNullOrWhiteSpace())
                 {
                     throw new InvalidOperationException($"{nameof(TestAutomationOptions.SCOPE)} - required setting is missing from StartUp");
@@ -123,7 +123,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exten
         {
             Log.Information("Registering Test Automation shared services.");
 
-            if (configuration == null) 
+            if (configuration == null)
             {
                 throw new InvalidOperationException($"{nameof(AddTestAutomationServices)} - configuration cannot be null").Log();
             }

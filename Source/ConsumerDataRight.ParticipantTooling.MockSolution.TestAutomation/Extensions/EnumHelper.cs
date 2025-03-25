@@ -1,7 +1,7 @@
-﻿using System.Runtime.Serialization;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions
 {
+    using System.Runtime.Serialization;
+
     public static class EnumHelper
     {
         public static TEnum ToEnum<TEnum>(this string enumText, Exception? exception = null)

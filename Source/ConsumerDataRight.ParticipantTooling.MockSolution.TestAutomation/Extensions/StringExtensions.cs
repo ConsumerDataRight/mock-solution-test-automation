@@ -1,10 +1,10 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using IdentityModel;
-using Serilog;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions
 {
+    using System.Security.Cryptography;
+    using System.Text;
+    using IdentityModel;
+    using Serilog;
+
     public static class StringExtensions
     {
         static public void WriteStringToFile(string filename, string? str)
@@ -14,8 +14,9 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exten
         }
 
         /// <summary>
-        /// Convert string to int
+        /// Convert string to int.
         /// </summary>
+        /// <returns>int.</returns>
         public static int ToInt(this string str)
         {
             return Convert.ToInt32(str);
@@ -31,6 +32,5 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exten
         {
             return string.IsNullOrWhiteSpace(str);
         }
-
     }
 }

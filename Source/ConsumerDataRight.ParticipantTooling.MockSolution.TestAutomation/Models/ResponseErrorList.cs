@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions;
-using Newtonsoft.Json;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models
 {
+    using System.ComponentModel.DataAnnotations;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions;
+    using Newtonsoft.Json;
+
     public class ResponseErrorList
     {
         public ResponseErrorList()

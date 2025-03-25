@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Dataholders.Energy
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Dataholders.Energy
 {
+    using Newtonsoft.Json;
+
     public class ResponseEnergyAccountListV2
     {
         /// <summary>

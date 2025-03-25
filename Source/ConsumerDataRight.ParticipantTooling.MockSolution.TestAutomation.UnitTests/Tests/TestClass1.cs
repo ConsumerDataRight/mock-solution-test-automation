@@ -9,8 +9,11 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UnitT
     {
         public class Startup
         {
-            //A default startup is required due to the test project inheriting Xunit.DependencyInjection from the Nuget project. 
-            public void ConfigureServices(IServiceCollection services) { }
+            // A default startup is required due to the test project inheriting Xunit.DependencyInjection from the Nuget project. 
+            public void ConfigureServices(IServiceCollection services)
+            {
+                // Method intentionally left empty.
+            }
         }
 
         [Fact]

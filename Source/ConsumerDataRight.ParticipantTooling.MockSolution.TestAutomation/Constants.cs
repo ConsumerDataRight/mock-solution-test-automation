@@ -30,21 +30,21 @@
         }
 
         /// <summary>
-        /// User/Customer IDs used for testing. Industry specific users are in an industry sub-class whereas the rest are at the first level
+        /// User/Customer IDs used for testing. Industry specific users are in an industry sub-class whereas the rest are at the first level.
         /// </summary>
         public static class Users
         {
             /// <summary>
-            /// Banking-specific Users
+            /// Banking-specific Users.
             /// </summary>
             public static class Banking
             {
-                public const string UserIdJaneWilson = "jwilson"; //Banking customer
-                public const string CustomerIdJaneWilson = "bfb689fb-7745-45b9-bbaa-b21e00072447";//Banking customer
+                public const string UserIdJaneWilson = "jwilson"; // Banking customer
+                public const string CustomerIdJaneWilson = "bfb689fb-7745-45b9-bbaa-b21e00072447"; // Banking customer
             }
 
             /// <summary>
-            /// Energy-specific Users
+            /// Energy-specific Users.
             /// </summary>
             public static class Energy
             {
@@ -66,16 +66,16 @@
         public static class Accounts
         {
             /// <summary>
-            /// Banking-specific Accounts
+            /// Banking-specific Accounts.
             /// </summary>
             public static class Banking
             {
                 public const string AccountIdJaneWilson = "98765988";
-                public const string AccountIdsAllJaneWilson = "98765988,98765987"; //Banking customer
+                public const string AccountIdsAllJaneWilson = "98765988,98765987"; // Banking customer
             }
 
             /// <summary>
-            /// Energy-specific Accounts
+            /// Energy-specific Accounts.
             /// </summary>
             public static class Energy
             {
@@ -84,7 +84,6 @@
                 public const string AccountIdsSubsetMaryMoss = "0011223301,0011223302,0011223303"; // Energy customer
                 public const string AccountIdsAllHeddaHare = "4ee1a8db-13af-44d7-b54b-e94dff3df548"; // Energy customer
             }
-
 
             public const string AccountIdJohnSmith = "1122334455";
             public const string AccountIdKamillaSmith = "0000001";
@@ -139,7 +138,6 @@
                 @"5yM3wHYM6_eelSvv0aWkptRYDDcVCa4_H93RmiPJt5RoUX2SR7lf8gdHM9fb-n1_OcIVdEDz9W6RUw1o3TFp5kh3xIlS_sIawJ5dGTztnj3VtI36d7qL59uPojPmUQ-OT22IZE-u_KZxAe" +
                 @"tUQhX0-IqUzdVsdTf2t9DNva2VRkK9Cdf2kCtqs17NGDlWceQ7IKR-U6qn9izNOYeM47Qhqa6MiROtrfe5Ja3p8vjnN72eEQ_XPd2bMVxkbyh0IrG9-5JCOolbjjnbZaxh4dIggfdY52JS" +
                 @"2-DLYhQnMnJtrVkKe1J212x8SVf7FKcNGY0OM4MLG3Gcl5S8EzQQuh464Nr-rPnec7SbrqjQ2xyn56s4Nhv5PfQ-VOqPQXOkyBPzH";
-
 
             // VSCode slows on excessively long lines, splitting string constant into smaller lines.
             public const string ConsumerAccessTokenBankingExpired =
@@ -219,11 +217,11 @@
 
         public static class Scopes
         {
-            // Scope 
-            public const string ScopeBanking = "openid profile common:customer.basic:read bank:accounts.basic:read bank:transactions:read"; //Also used by Auth Server
-            public const string ScopeBankingWithoutOpenId = "profile common:customer.basic:read bank:accounts.basic:read bank:transactions:read";  //Also used by Auth Server
+            // Scope
+            public const string ScopeBanking = "openid profile common:customer.basic:read bank:accounts.basic:read bank:transactions:read"; // Also used by Auth Server
+            public const string ScopeBankingWithoutOpenId = "profile common:customer.basic:read bank:accounts.basic:read bank:transactions:read";  // Also used by Auth Server
             public const string ScopeEnergy = "openid profile common:customer.basic:read energy:accounts.basic:read energy:accounts.concessions:read";  // scope of 'energy:accounts.concessions:read' is not working?
-            public const string ScopeEnergyWithoutOpenId = "profile common:customer.basic:read energy:accounts.basic:read energy:accounts.concessions:read"; // scope of 'energy:accounts.concessions:read' is not working?;
+            public const string ScopeEnergyWithoutOpenId = "profile common:customer.basic:read energy:accounts.basic:read energy:accounts.concessions:read"; // energy:accounts.concessions:read is not working?
             public const string ScopeRegistration = "cdr:registration";
         }
 
@@ -258,7 +256,7 @@
             {
                 public const string AuthorizationHolderOfKeyCheckFailed = "ERR-AUTH-001: Holder of Key check failed";
                 public const string AuthorizationAccessTokenExpired = "ERR-AUTH-002: Access Token check failed - it has been revoked";
-                public const string AuthorizationInsufficientScope = "ERR-AUTH-003: Insufficent scope"; //This doesn't match the one in AuthServer because it had no additional text
+                public const string AuthorizationInsufficientScope = "ERR-AUTH-003: Insufficent scope"; // This doesn't match the one in AuthServer because it had no additional text
                 public const string RequestUriClientIdMismatch = "ERR-AUTH-0004: client_id does not match request_uri client_id";
                 public const string RequestUriAlreadyUsed = "ERR-AUTH-005: request_uri has already been used";
                 public const string ExpiredRequestUri = "ERR-AUTH-006: request_uri has expired";
@@ -283,6 +281,7 @@
             {
                 public const string InvalidConsentCdrArrangement = "ERR-ARR-001: Invalid Consent Arrangement";
             }
+
             public static class Jwt
             {
                 public const string JwtInvalidAudience = "ERR-JWT-001: {0} - Invalid audience";
@@ -301,6 +300,7 @@
                 public const string SoftwareStatementEmptyOrInvalid = "ERR-DCR-006: The software_statement is empty or invalid";
                 public const string InvalidSectorIdentifierUri = "ERR-DCR-007: Invalid sector_identifier_uri";
             }
+
             public static class Token
             {
                 public const string ExpiredRefreshToken = "ERR-TKN-001: refresh_token has expired";
@@ -311,6 +311,7 @@
                 public const string MissingCodeVerifier = "ERR-TKN-006: code_verifier is missing";
                 public const string InvalidAuthorizationCode = "ERR-TKN-007: authorization code is invalid";
             }
+
             public static class General
             {
                 public const string SoftwareProductNotFound = "ERR-GEN-001: Software product not found";
@@ -325,7 +326,7 @@
                 public const string ResponseTypeMismatchRequestUriResponseType = "ERR-GEN-010: response_type does not match request_uri response_type";
                 public const string MissingScope = "ERR-GEN-011: scope is missing";
                 public const string MissingOpenIdScope = "ERR-GEN-012: openid scope is missing";
-                public const string UnsupportedResponseMode = "ERR-GEN-013: response_mode is not supported"; //This was INVALID_RESPONSE_MODE in auth server
+                public const string UnsupportedResponseMode = "ERR-GEN-013: response_mode is not supported"; // This was INVALID_RESPONSE_MODE in auth server
                 public const string GrantTypeNotProvided = "ERR-GEN-014: grant_type not provided";
                 public const string UnsupportedGrantType = "ERR-GEN-015: unsupported grant_type";
                 public const string MissingIssuerClaim = "ERR-GEN-016: Missing iss claim";

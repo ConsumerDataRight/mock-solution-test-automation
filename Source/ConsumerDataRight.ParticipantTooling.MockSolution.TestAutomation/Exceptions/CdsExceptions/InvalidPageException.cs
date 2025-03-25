@@ -1,8 +1,8 @@
-﻿using System.Net;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
 {
+    using System.Net;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+
     public class InvalidPageException : CdrException
     {
         /// <summary>
@@ -13,10 +13,12 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
         /// <param name="message"></param>
         public InvalidPageException(string detail, string message)
             : base(CdsError.InvalidPage, detail, HttpStatusCode.UnprocessableEntity, message)
-        { }
+        {
+        }
 
         public InvalidPageException(string detail)
         : base(CdsError.InvalidPage, detail, HttpStatusCode.UnprocessableEntity, null)
-        { }
+        {
+        }
     }
 }

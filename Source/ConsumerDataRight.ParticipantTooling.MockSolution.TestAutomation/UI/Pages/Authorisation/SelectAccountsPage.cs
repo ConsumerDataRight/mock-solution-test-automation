@@ -1,13 +1,12 @@
-﻿using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.Playwright;
-using Serilog;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pages.Authorisation
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pages.Authorisation
 {
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
+    using Microsoft.IdentityModel.Tokens;
+    using Microsoft.Playwright;
+    using Serilog;
+
     public class SelectAccountsPage
     {
-
         private readonly IPage _page;
         private readonly ILocator _btnContinue;
         private readonly ILocator _btnCancel;
@@ -32,14 +31,15 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pa
 
             await _page.Locator($"//input[@aria-labelledby='account-{accountToSelect}']", true).CheckAsync();
         }
+
         public async Task SelectAccounts(string[] accountsToSelect)
         {
             foreach (string accountToSelect in accountsToSelect)
             {
                 await SelectAccount(accountToSelect.Trim());
             }
-
         }
+
         public async Task SelectAccounts(string accountsToSelectCsv)
         {
             if (string.IsNullOrEmpty(accountsToSelectCsv))
@@ -63,31 +63,31 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.UI.Pa
             {
                 await input.CheckAsync();
             }
-
         }
 
         public async Task ClickContinue()
         {
             await _btnContinue.ClickAsync();
         }
+
         public async Task ClickCancel()
         {
             await _btnCancel.ClickAsync();
         }
+
         public async Task<bool> NoAccountSelectedErrorExists()
         {
             try
             {
-                var element = await _page.WaitForSelectorAsync($"//p[text()='Please select one or more Accounts']",true);
+                var element = await _page.WaitForSelectorAsync($"//p[text()='Please select one or more Accounts']", true);
 
                 return await element.IsVisibleAsync();
             }
-            catch (TimeoutException) { }
+            catch (TimeoutException)
             {
                 Log.Error("A timeout exception was caught in {Class}.{Function}", nameof(SelectAccountsPage), nameof(NoAccountSelectedErrorExists));
                 return false;
             }
         }
-
     }
 }

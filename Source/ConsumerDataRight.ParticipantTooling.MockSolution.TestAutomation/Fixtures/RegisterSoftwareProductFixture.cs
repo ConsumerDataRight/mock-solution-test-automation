@@ -1,14 +1,15 @@
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
-using Microsoft.Extensions.Options;
-using Serilog;
-using Xunit;
-
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtures
 {
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
+    using Microsoft.Extensions.Options;
+    using Serilog;
+    using Xunit;
+
     /// <summary>
     /// Purges DataHolders AuthServer database and registers software product
-    /// (in addition to operations performed by TestFixture)
+    /// (in addition to operations performed by TestFixture).
     /// </summary>
     public class RegisterSoftwareProductFixture : BaseFixture, IAsyncLifetime
     {
@@ -41,7 +42,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtu
             Helpers.AuthServer.PurgeAuthServerForDataholder(_options);
 
             // Register software product
-            await _dataHolderRegisterService.RegisterSoftwareProduct(responseType: "code,code id_token");
+            await _dataHolderRegisterService.RegisterSoftwareProduct(responseType: ResponseType.Code);
         }
 
         new public async Task DisposeAsync()
@@ -49,7 +50,6 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtu
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(DisposeAsync), nameof(RegisterSoftwareProductFixture));
 
             await base.DisposeAsync();
-
         }
     }
 }

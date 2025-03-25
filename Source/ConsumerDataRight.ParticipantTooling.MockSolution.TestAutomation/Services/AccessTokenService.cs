@@ -1,12 +1,12 @@
-using System.Net;
-using System.Net.Http.Headers;
-using System.Text;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
-using Serilog;
-
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Services
 {
+    using System.Net;
+    using System.Net.Http.Headers;
+    using System.Text;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
+    using Serilog;
+
     public class AccessTokenService : IAccessTokenService
     {
         public AccessTokenService(string mtlsAuthServerTokenUrl)
@@ -18,21 +18,29 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
         private const string _defaultClientId = "86ecb655-9eba-409c-9be3-59e7adf7080d";
 
         public string? CertificateFilename { get; set; }
+
         public string? CertificatePassword { get; set; }
 
         public string? JwtCertificateFilename { get; set; }
+
         public string? JwtCertificatePassword { get; set; }
 
         public string URL { get; init; }
+
         public string Issuer { get; init; } = _defaultClientId;
+
         public string Audience { get; init; }
+
         public string Scope { get; init; } = "bank:accounts.basic:read";
-        public string GrantType { get; init; } = "";
+
+        public string GrantType { get; init; } = string.Empty;
+
         public string ClientId { get; init; } = _defaultClientId;
-        public string ClientAssertionType { get; init; } = "";
+
+        public string ClientAssertionType { get; init; } = string.Empty;
 
         /// <summary>
-        /// Get HttpRequestMessage for access token request
+        /// Get HttpRequestMessage for access token request.
         /// </summary>
         private static HttpRequestMessage CreateAccessTokenRequest(
            string url,
@@ -79,7 +87,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 CertificateFilename = jwtCertificateFilename,
                 CertificatePassword = jwtCertificatePassword,
                 Issuer = issuer,
-                Audience = audience
+                Audience = audience,
             }.Generate();
 
             var request = new HttpRequestMessage(HttpMethod.Post, url)
@@ -87,7 +95,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 Content = new StringContent(
                     BuildContent(scope, grantType, clientId, clientAssertionType, client_assertion),
                     Encoding.UTF8,
-                    "application/json")
+                    "application/json"),
             };
 
             request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
@@ -96,12 +104,13 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
         }
 
         /// <summary>
-        /// Get an access token from Auth Server
+        /// Get an access token from Auth Server.
         /// </summary>
+        /// <returns>Task representing the asynchronous operation.</returns>
         public async Task<string?> GetAsync(string dhMtlsGatewayUrl, string xtlsClientCertThumbprint, bool isStandalone)
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(GetAsync), nameof(AccessTokenService));
-           
+
             // Create HttpClient
             using var client = Helpers.Web.CreateHttpClient(CertificateFilename, CertificatePassword);
 

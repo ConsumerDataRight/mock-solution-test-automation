@@ -1,7 +1,7 @@
-﻿using System.Runtime.Serialization;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums
 {
+    using System.Runtime.Serialization;
+
     public enum LegalEntityStatus
     {
         [EnumMember(Value = "ACTIVE")]
@@ -9,6 +9,6 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums
         [EnumMember(Value = "INACTIVE")]
         INACTIVE,
         [EnumMember(Value = "REMOVED")]
-        REMOVED
+        REMOVED,
     }
 }

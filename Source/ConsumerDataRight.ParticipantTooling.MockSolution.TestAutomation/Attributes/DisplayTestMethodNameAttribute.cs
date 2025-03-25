@@ -1,9 +1,10 @@
-﻿using System.Reflection;
-using Serilog;
-using Xunit.Sdk;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Attributes
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Attributes
 {
+    using System.Reflection;
+    using Serilog;
+    using Xunit.Sdk;
+
+    [System.AttributeUsage(System.AttributeTargets.Class, Inherited = true)]
     public class DisplayTestMethodNameAttribute : BeforeAfterTestAttribute
     {
         private int _count = 0;

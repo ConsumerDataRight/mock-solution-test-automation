@@ -1,8 +1,8 @@
-﻿using System.Net;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions
 {
+    using System.Net;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+
     public class CdrException : Exception
     {
         private readonly string _code;

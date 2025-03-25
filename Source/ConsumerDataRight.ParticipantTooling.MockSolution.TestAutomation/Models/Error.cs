@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models
 {
+    using System.ComponentModel.DataAnnotations;
+
     public class Error
     {
         public Error()

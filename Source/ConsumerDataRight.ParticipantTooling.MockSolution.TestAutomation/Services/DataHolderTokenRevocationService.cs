@@ -1,11 +1,11 @@
-using System.Security.Cryptography.X509Certificates;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
-using Microsoft.Extensions.Options;
-
 namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Services
 {
+    using System.Security.Cryptography.X509Certificates;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Interfaces;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
+    using Microsoft.Extensions.Options;
+
     public class DataHolderTokenRevocationService : IDataHolderTokenRevocationService
     {
         private readonly TestAutomationOptions _options;
@@ -14,7 +14,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
         public DataHolderTokenRevocationService(IOptions<TestAutomationOptions> options, IOptions<TestAutomationAuthServerOptions>? authServerOptions = null)
         {
             _options = options.Value ?? throw new ArgumentNullException(nameof(options));
-            _authServerOptions = authServerOptions?.Value; //no null check here because this is nullable for Data Holder projects
+            _authServerOptions = authServerOptions?.Value; // no null check here because this is nullable for Data Holder projects
         }
 
         // Send token request, returning HttpResponseMessage
@@ -88,7 +88,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                 CertificateFilename = jwtCertificateFilename,
                 CertificatePassword = jwtCertificatePassword,
                 Issuer = clientId ?? throw new InvalidOperationException($"{nameof(clientId)} can not be null.").Log(),
-                Audience = url
+                Audience = url,
             }.Generate();
         }
 

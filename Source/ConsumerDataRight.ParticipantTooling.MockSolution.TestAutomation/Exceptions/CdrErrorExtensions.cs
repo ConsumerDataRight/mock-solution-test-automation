@@ -1,9 +1,9 @@
-﻿using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
-using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions
 {
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Extensions;
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models;
+
     public static class CdrErrorExtensions
     {
         private static readonly Dictionary<CdsError, CdsErrorInfo> _errors = InitErrors();

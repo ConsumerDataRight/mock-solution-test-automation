@@ -1,7 +1,7 @@
-﻿using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
-
-namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
+﻿namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Exceptions.CdsExceptions
 {
+    using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Enums;
+
     public class InvalidHeaderException : CdrException
     {
         /// <summary>
@@ -17,6 +17,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Excep
 
         public InvalidHeaderException(string detail)
           : base(CdsError.InvalidHeader, detail, System.Net.HttpStatusCode.BadRequest, null)
-        { }
+        {
+        }
     }
 }
