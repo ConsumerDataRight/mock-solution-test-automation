@@ -1,0 +1,30 @@
+resources:
+  repositories: 
+    - repository: shared-code-scanning
+      type: git
+      name: Common/shared-code-scanning
+      ref: refs/heads/main
+      trigger: none
+
+schedules:
+- cron: '0 17 * * 0'  # Run at 17:00 Sunday night UTC (03:00+10:00 Monday Morning)
+  displayName: 'Weekly code scan'
+  branches:
+    include: 
+    - develop
+  always: true
+
+# Disable standard CI build
+trigger: none
+
+variables:
+  - group: PT-Pipeline-Common
+
+pool:
+  name: mdp-mgmt-shared
+  demands:
+    - ImageOverride -equals $(PipelineHostLinuxImage)
+
+
+extends:
+  template: pipeline-templates/code-scanning.yml@shared-code-scanning

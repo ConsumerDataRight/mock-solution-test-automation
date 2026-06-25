@@ -27,6 +27,7 @@ resources:
 stages:
 - stage: ${{parameters.pushEnvironment}}
   variables:
+  - group: PT-Pipeline-Common
   - group: nuget_package_deployment_${{parameters.pushEnvironment}} 
   - group: nuget_package_deployment_certificate
   - name: buildConfiguration
@@ -39,7 +40,9 @@ stages:
       
 
   pool:
-    vmImage: 'windows-latest'
+    name: mdp-mgmt-shared
+    demands:
+      - ImageOverride -equals $(PipelineHostWindowsImage)
   jobs:
   - job : deploy_${{parameters.pushEnvironment}}
 
@@ -95,8 +98,8 @@ stages:
             --timestamp-digest "sha256" `
             --azure-key-vault-url $(code-signing-kv-url) `
             --azure-key-vault-tenant-id $(code-signing-kv-tenant-id) `
-            --azure-key-vault-client-id $(sp-code-signing-prod-client-id) `
-            --azure-key-vault-client-secret $(sp-code-signing-prod-client-secret) `
+            --azure-key-vault-client-id $(code-signing-client-id) `
+            --azure-key-vault-client-secret $(code-signing-client-secret) `
             --azure-key-vault-certificate  $(code-signing-cert-name)
 
     # NOTE: Avoiding verifying with NuGetKeyVaultSignTool as it is rather faulty. Will give false positive for a file that doesn't exist.

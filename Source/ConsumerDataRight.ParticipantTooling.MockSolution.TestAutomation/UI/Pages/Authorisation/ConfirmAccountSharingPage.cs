@@ -46,7 +46,7 @@
             while (DateTime.Now < stopAt && String.IsNullOrEmpty(clusterDetail))
             {
                 await Task.Delay(100);
-                clusterDetail = await _page.Locator($"//div[@role='button' and .//a[text()='{clusterHeading}']]/..//p", true).InnerTextAsync();
+                clusterDetail = await _page.Locator($"//button[.//a[text()='{clusterHeading}']]/../..//p", true).InnerTextAsync();
             }
 
             return clusterDetail;
@@ -54,7 +54,7 @@
 
         public async Task<int> GetClusterCount()
         {
-            var allClusterHeadings = await _page.QuerySelectorAllAsync("//div[contains(@class,'MuiAccordionSummary')]/a");
+            var allClusterHeadings = await _page.QuerySelectorAllAsync(".MuiAccordionSummary-root a");
             return allClusterHeadings.Count;
         }
     }
