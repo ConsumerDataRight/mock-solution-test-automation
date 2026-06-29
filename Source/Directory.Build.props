@@ -4,5 +4,6 @@
 		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">true</TreatWarningsAsErrors>
+		<WarningsNotAsErrors>NU1901;NU1902</WarningsNotAsErrors>
     </PropertyGroup>
 </Project>

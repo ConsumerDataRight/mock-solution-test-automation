@@ -12,21 +12,40 @@ trigger:
 
 # the build will run on a Microsoft hosted agent, using the lastest Windows VM Image 
 pool:
-  vmImage: 'windows-latest'
+  name: mdp-mgmt-shared
+  demands:
+    - ImageOverride -equals $(PipelineHostWindowsImage)
+
 
 # these variables are available throughout the build file
 # just the build configuration is defined, in this case we are building Release packages
 variables:
-  buildConfiguration: 'Release'
-  ${{ if or(eq(variables['Build.SourceBranchName'], 'develop'), eq(variables['Build.SourceBranchName'], 'main'), startsWith(variables['Build.SourceBranchName'], 'release')) }}: 
-    MINVERBUILDMETADATA: ''
-  ${{ else }}:
-    MINVERBUILDMETADATA: $(Build.SourceVersion)
+  - group: PT-Pipeline-Common
+  - name: buildConfiguration
+    value: 'Release'
+  - name: MINVERBUILDMETADATA
+    ${{ if or(eq(variables['Build.SourceBranchName'], 'develop'), eq(variables['Build.SourceBranchName'], 'main'), startsWith(variables['Build.SourceBranchName'], 'release')) }}: 
+      value: ''
+    ${{ else }}:
+      value: $(Build.SourceVersion)
 
 # The build has 3 seperate tasks run under 1 step
 steps:
 - checkout: self
   fetchDepth: 0
+
+# Shorten commit hash that is used for versioning feature branch builds.
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+        if ($env:MINVERBUILDMETADATA) {
+          Write-Host "MinverMeta is $env:MINVERBUILDMETADATA"
+          $shortenedCommitHash = $env:MINVERBUILDMETADATA.Substring(0,7)
+          Write-Host "Shortened commit hash $shortenedCommitHash "
+          Write-Host "##vso[task.setvariable variable=MINVERBUILDMETADATA]$shortenedCommitHash"                 
+        }
+  displayName: "Shorten commit hash to 7 characters for feature branch builds."
 
 # The first task is the dotnet command build, pointing to our csproj file
 - task: DotNetCoreCLI@2

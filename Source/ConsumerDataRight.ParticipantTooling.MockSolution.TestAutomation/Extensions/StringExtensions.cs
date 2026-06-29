@@ -2,7 +2,7 @@
 {
     using System.Security.Cryptography;
     using System.Text;
-    using IdentityModel;
+    using Jose;
     using Serilog;
 
     public static class StringExtensions
