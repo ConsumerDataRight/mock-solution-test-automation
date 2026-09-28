@@ -5,14 +5,15 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
     using Microsoft.Extensions.Configuration;
     using Serilog;
     using Serilog.Extensions.Hosting;
-    using Xunit.DependencyInjection;
+    using Serilog.Sinks.XUnit3;
+    using Xunit;
 
     [DisplayTestMethodName]
     abstract public class SharedBaseTest
     {
         public IAssertionStrategy BaseTestAssertionStrategy { get; init; }
 
-        protected SharedBaseTest(ITestOutputHelperAccessor testOutputHelperAccessor, IConfiguration config)
+        protected SharedBaseTest(IConfiguration config)
         {
             BaseTestAssertionStrategy = new TestAssertionStrategy();
 
@@ -21,7 +22,10 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
             {
                 return lc
                   .ReadFrom.Configuration(config)
-                  .WriteTo.TestOutput(testOutputHelperAccessor.Output);
+                  .WriteTo.XUnit3TestOutput(new XUnit3TestOutputSink(new XUnit3TestOutputSinkOptions())
+                  {
+                      TestOutputHelper = TestContext.Current.TestOutputHelper,
+                  });
             });
 
             try
