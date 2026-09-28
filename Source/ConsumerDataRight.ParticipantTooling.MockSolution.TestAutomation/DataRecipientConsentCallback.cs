@@ -2,6 +2,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
 {
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.TestHost;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Serilog;
@@ -22,7 +23,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
 
         private string RedirectUrlLeftPart => new Uri(RedirectUrl).GetLeftPart(UriPartial.Authority);
 
-        private IWebHost? _host;
+        private IHost? _host;
 
         public class CallbackRequest
         {
@@ -43,12 +44,18 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(Start), nameof(DataRecipientConsentCallback));
 
-            _host = new WebHostBuilder()
-               .ConfigureServices(s => { s.AddSingleton(typeof(CallbackRequest), Request); })
-               .UseKestrel()
-               .UseStartup<DataRecipientConsentCallbackStartup>()
-               .UseUrls(RedirectUrlLeftPart)
-               .Build();
+            _host = Host.CreateDefaultBuilder()
+                .ConfigureServices(s =>
+                {
+                    s.AddSingleton(typeof(CallbackRequest), Request);
+                })
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseKestrel();
+                    webBuilder.UseStartup<DataRecipientConsentCallbackStartup>();
+                    webBuilder.UseUrls(RedirectUrlLeftPart);
+                })
+                .Build();
 
             _host.RunAsync();
         }
@@ -94,44 +101,39 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
             return null; // Timed out
         }
 
+#pragma warning disable S1118 // Utility classes should not have public constructors
         class DataRecipientConsentCallbackStartup
+#pragma warning restore S1118 // Utility classes should not have public constructors
         {
-            readonly CallbackRequest _callbackRequest;
-
-            public DataRecipientConsentCallbackStartup(CallbackRequest callbackRequest)
+            public static void ConfigureServices(IServiceCollection services)
             {
-                _callbackRequest = callbackRequest;
+                services.AddRouting();
             }
 
-            public void Configure(IApplicationBuilder app)
+            public static void Configure(IApplicationBuilder app, CallbackRequest callbackRequest)
             {
                 app.UseHttpsRedirection();
                 app.UseRouting();
                 app.UseEndpoints(endpoints =>
                 {
-                    endpoints.MapGet(_callbackRequest.PathAndQuery!, async context =>
+                    endpoints.MapGet(callbackRequest.PathAndQuery!, async context =>
                     {
                         var body = await new StreamReader(context.Request.Body).ReadToEndAsync();
-                        _callbackRequest.method = HttpMethod.Get;
-                        _callbackRequest.body = body;
-                        _callbackRequest.queryString = context.Request.QueryString.Value;
-                        _callbackRequest.received = true;
+                        callbackRequest.method = HttpMethod.Get;
+                        callbackRequest.body = body;
+                        callbackRequest.queryString = context.Request.QueryString.Value;
+                        callbackRequest.received = true;
                     });
 
-                    endpoints.MapPost(_callbackRequest.PathAndQuery!, async context =>
+                    endpoints.MapPost(callbackRequest.PathAndQuery!, async context =>
                     {
                         var body = await new StreamReader(context.Request.Body).ReadToEndAsync();
-                        _callbackRequest.method = HttpMethod.Post;
-                        _callbackRequest.body = body;
-                        _callbackRequest.queryString = context.Request.QueryString.Value;
-                        _callbackRequest.received = true;
+                        callbackRequest.method = HttpMethod.Post;
+                        callbackRequest.body = body;
+                        callbackRequest.queryString = context.Request.QueryString.Value;
+                        callbackRequest.received = true;
                     });
                 });
-            }
-
-            public static void ConfigureServices(IServiceCollection services)
-            {
-                services.AddRouting();
             }
         }
     }

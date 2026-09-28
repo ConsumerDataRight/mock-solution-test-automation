@@ -7,7 +7,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtu
     {
         static private bool RUNNING_IN_CONTAINER => Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER")?.ToUpper() == "TRUE";
 
-        virtual public Task InitializeAsync()
+        virtual public ValueTask InitializeAsync()
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(InitializeAsync), nameof(PlaywrightFixture));
 
@@ -19,14 +19,14 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtu
                 Microsoft.Playwright.Program.Main(new string[] { "install-deps" });
             }
 
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
 
-        virtual public Task DisposeAsync()
+        virtual public ValueTask DisposeAsync()
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(DisposeAsync), nameof(PlaywrightFixture));
 
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
     }
 }

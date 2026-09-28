@@ -5,13 +5,12 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtu
     using ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Models.Options;
     using Microsoft.Extensions.Options;
     using Serilog;
-    using Xunit;
 
     /// <summary>
     /// Purges DataHolders AuthServer database and registers software product
     /// (in addition to operations performed by TestFixture).
     /// </summary>
-    public class RegisterSoftwareProductFixture : BaseFixture, IAsyncLifetime
+    public class RegisterSoftwareProductFixture : BaseFixture
     {
         private readonly TestAutomationOptions _options;
         private readonly IDataHolderRegisterService _dataHolderRegisterService;
@@ -29,7 +28,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtu
             _dataHolderAccessTokenCache = dataHolderAccessTokenCache ?? throw new ArgumentNullException(nameof(dataHolderAccessTokenCache));
         }
 
-        new public async Task InitializeAsync()
+        public override async ValueTask InitializeAsync()
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(InitializeAsync), nameof(RegisterSoftwareProductFixture));
 
@@ -45,7 +44,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtu
             await _dataHolderRegisterService.RegisterSoftwareProduct(responseType: ResponseType.Code);
         }
 
-        new public async Task DisposeAsync()
+        public override async ValueTask DisposeAsync()
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(DisposeAsync), nameof(RegisterSoftwareProductFixture));
 

@@ -52,7 +52,10 @@
                     }
                 }
 
-                FluentAssertions.Common.Services.ThrowException(builder.ToString());
+                using (var scope = new AssertionScope())
+                {
+                    scope.AddPreFormattedFailure(builder.ToString());
+                }
             }
         }
 

@@ -97,7 +97,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
             var clientHandler = new HttpClientHandler();
             clientHandler.ServerCertificateCustomValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
 
-            clientHandler.ClientCertificates.Add(new X509Certificate2(
+            clientHandler.ClientCertificates.Add(X509CertificateLoader.LoadPkcs12FromFile(
                 certificateFilename ?? throw new ArgumentNullException(nameof(certificateFilename)),
                 certificatePassword,
                 X509KeyStorageFlags.Exportable));

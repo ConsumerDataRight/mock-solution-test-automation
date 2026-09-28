@@ -430,7 +430,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
                         encryptedJwt.Header["enc"].Should().Be("A128CBC-HS256", because: "JARM Encryption is turned on.");
 
                         // Decrypt the JARM JWT.
-                        var privateKeyCertificate = new X509Certificate2(JwtCertificateFilename, JwtCertificatePassword, X509KeyStorageFlags.Exportable);
+                        var privateKeyCertificate = X509CertificateLoader.LoadPkcs12FromFile(JwtCertificateFilename, JwtCertificatePassword, X509KeyStorageFlags.Exportable);
                         var privateKey = privateKeyCertificate.GetRSAPrivateKey();
                         JweToken token = JWE.Decrypt(queryValueResponse, privateKey);
                         encodedJwt = token.Plaintext;
