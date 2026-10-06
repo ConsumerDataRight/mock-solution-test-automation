@@ -246,7 +246,7 @@
             return _builder.Build();
         }
 
-        public ApiService BuildDataHolderEnergyGetAccountsAPI(string? accessToken, string? xFapiAuthDate, string? xv = "1", string? xMinV = null, string? xFapiInteractionId = null, string certFileName = Constants.Certificates.CertificateFilename, string certPassword = Constants.Certificates.CertificatePassword, string? url = null)
+        public ApiService BuildDataHolderEnergyGetAccountsAPI(string? accessToken, string? xFapiAuthDate, string? xv = "2", string? xMinV = null, string? xFapiInteractionId = null, string certFileName = Constants.Certificates.CertificateFilename, string certPassword = Constants.Certificates.CertificatePassword, string? url = null)
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(BuildDataHolderEnergyGetAccountsAPI), nameof(ApiServiceDirector));
 

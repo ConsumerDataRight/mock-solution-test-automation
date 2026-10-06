@@ -35,7 +35,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Servi
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(Generate), nameof(PrivateKeyJwtService));
 
-            var certificate = new X509Certificate2(CertificateFilename, CertificatePassword, X509KeyStorageFlags.Exportable);
+            var certificate = X509CertificateLoader.LoadPkcs12FromFile(CertificateFilename, CertificatePassword, X509KeyStorageFlags.Exportable);
 
             var x509SigningCredentials = new X509SigningCredentials(certificate, SecurityAlgorithms.RsaSsaPssSha256);
 

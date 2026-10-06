@@ -27,7 +27,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtu
 
         public ServiceProvider ServiceProvider { get; }
 
-        public Task InitializeAsync()
+        public virtual ValueTask InitializeAsync()
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(InitializeAsync), nameof(BaseFixture));
 
@@ -52,10 +52,10 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation.Fixtu
                 CdrAuthServer_SeedDatabase();
             }
 
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
 
-        public async Task DisposeAsync()
+        public virtual async ValueTask DisposeAsync()
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(DisposeAsync), nameof(BaseFixture));
 

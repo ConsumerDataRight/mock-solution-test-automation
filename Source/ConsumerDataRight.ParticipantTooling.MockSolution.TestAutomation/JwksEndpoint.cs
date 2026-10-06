@@ -30,19 +30,23 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
 
         public string CertificatePassword { get; init; }
 
-        private IWebHost? _host;
+        private IHost? _host;
 
         public void Start()
         {
             Log.Information(Constants.LogTemplates.StartedFunctionInClass, nameof(Start), nameof(JwksEndpoint));
 
-            _host = new WebHostBuilder()
-                .UseKestrel(opts =>
+            _host = Host.CreateDefaultBuilder()
+                .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    opts.ListenAnyIP(UrlPort, opts => opts.UseHttps());  // This will use the default developer certificate.  Use "dotnet dev-certs https" to install if necessary
+                    webBuilder.UseKestrel(opts =>
+                    {
+                        opts.ListenAnyIP(UrlPort, listenOpts => listenOpts.UseHttps());  // This will use the default developer certificate.  Use "dotnet dev-certs https" to install if necessary
+                    });
+
+                    webBuilder.UseStartup(_ => new JwksCallback_Startup(this));
                 })
-               .UseStartup(_ => new JwksCallback_Startup(this))
-               .Build();
+                .Build();
 
             _host.RunAsync();
         }

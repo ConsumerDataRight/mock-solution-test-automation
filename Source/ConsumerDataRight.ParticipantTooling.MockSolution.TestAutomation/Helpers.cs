@@ -58,7 +58,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
                         throw new ArgumentNullException(nameof(certPassword), "Certificate password parameter cannot be null when Certificate filename parameter has been provided.").Log();
                     }
 
-                    clientHandler.ClientCertificates.Add(new X509Certificate2(
+                    clientHandler.ClientCertificates.Add(X509CertificateLoader.LoadPkcs12FromFile(
                         certFilename,
                         certPassword,
                         X509KeyStorageFlags.Exportable));
@@ -79,7 +79,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
 
             public static string CreateJWT(string certificateFilename, string certificatePassword, string payload)
             {
-                var cert = new X509Certificate2(certificateFilename, certificatePassword);
+                var cert = X509CertificateLoader.LoadPkcs12FromFile(certificateFilename, certificatePassword);
 
                 var securityKey = new X509SecurityKey(cert);
 
@@ -104,7 +104,7 @@ namespace ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation
             /// <returns>Jwks.</returns>
             public static Jwks BuildJWKS(string certificateFilename, string certificatePassword)
             {
-                var cert = new X509Certificate2(certificateFilename, certificatePassword);
+                var cert = X509CertificateLoader.LoadPkcs12FromFile(certificateFilename, certificatePassword);
 
                 // Get credentials from certificate
                 var securityKey = new X509SecurityKey(cert);

@@ -29,7 +29,7 @@
 
         ApiService BuildUserInfoAPI(string? xv, string? accessToken, string? thumbprint, HttpMethod? httpMethod, string certFilename = Constants.Certificates.CertificateFilename, string certPassword = Constants.Certificates.CertificatePassword);
 
-        ApiService BuildDataHolderEnergyGetAccountsAPI(string? accessToken, string? xFapiAuthDate, string? xv = "1", string? xMinV = null, string? xFapiInteractionId = null, string certFileName = Constants.Certificates.CertificateFilename, string certPassword = Constants.Certificates.CertificatePassword, string? url = null);
+        ApiService BuildDataHolderEnergyGetAccountsAPI(string? accessToken, string? xFapiAuthDate, string? xv = "2", string? xMinV = null, string? xFapiInteractionId = null, string certFileName = Constants.Certificates.CertificateFilename, string certPassword = Constants.Certificates.CertificatePassword, string? url = null);
 
         ApiService BuildDataHolderEnergyGetConcessionsAPI(string? accessToken, string? xFapiAuthDate, string? encryptedAccountId = null, string? xv = "1", string certFileName = Constants.Certificates.CertificateFilename, string certPassword = Constants.Certificates.CertificatePassword, string? url = null);
     }

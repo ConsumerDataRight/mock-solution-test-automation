@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>$(TargetFrameworkVersion)</TargetFramework>
     <PackageId>ConsumerDataRight.ParticipantTooling.MockSolution.TestAutomation</PackageId>
     <Authors />
     <Description>Shared test automation code for Consumer Data Right mock solutions.</Description>
@@ -80,7 +80,7 @@
     <PackageReference Include="Serilog.Extensions.Hosting" />
     <PackageReference Include="Serilog.Extensions.Logging" />
     <PackageReference Include="Serilog.Settings.Configuration" />
-    <PackageReference Include="Serilog.Sinks.XUnit" />
+    <PackageReference Include="Serilog.Sinks.XUnit3" />
     <PackageReference Include="SonarAnalyzer.CSharp">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -90,11 +90,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
-    <PackageReference Include="xunit" />
-    <PackageReference Include="Xunit.DependencyInjection" />
+    <PackageReference Include="xunit.v3.extensibility.core" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" />
     <PackageReference Include="Newtonsoft.Json" />
-    <PackageReference Include="xunit.runner.visualstudio"/>
   </ItemGroup>
   <Target Name="AddMinVerMetaData" AfterTargets="MinVer" Condition="'$(MinVerBuildMetadata)' != ''">
     <PropertyGroup>
